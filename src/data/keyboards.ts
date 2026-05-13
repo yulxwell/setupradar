@@ -1,14 +1,4 @@
-export interface Keyboard {
-  id: string;
-  name: string;
-  brand: string;
-  layout: "full" | "tkl" | "75%" | "65%" | "compact";
-  switchType: ("linear" | "tactile" | "clicky")[];
-  features: string[];
-  priceRange: string;
-  isHotSwap: boolean;
-  material: "plastic" | "aluminum" | "polycarbonate";
-}
+import { Keyboard } from "@/types";
 
 export const KEYBOARD_DATABASE: Keyboard[] = [
   {

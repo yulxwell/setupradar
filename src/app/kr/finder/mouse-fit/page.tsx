@@ -87,15 +87,15 @@ export default function MouseFitPage() {
             className="space-y-8"
           >
             <div className="text-center md:text-left">
-              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">본인의 손 크기는 어느 정도인가요?</h2>
-              <p className="text-sm text-[var(--muted)]">키보드 상단 F1 키부터 어디까지 닿는지 측정해 보세요.</p>
+              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">본인의 손 크기를 확인해보세요</h2>
+              <p className="text-sm text-[var(--muted)]">키보드 상단 F1 키 위에 손목을 두고, 중지가 어디까지 닿는지 확인해볼 수 있습니다.</p>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               {[
-                { id: "small", label: "S (Small)", range: "F1 ~ F9", desc: "작은 마우스 선호" },
-                { id: "medium", label: "M (Medium)", range: "F1 ~ F10.5", desc: "표준 마우스 선호" },
-                { id: "large", label: "L (Large)", range: "F11 ~ F12+", desc: "큰 마우스 선호" },
+                { id: "small", label: "작은 편 (Small)", range: "F1 ~ F9", desc: "작고 가벼운 모델이 편할 수 있습니다" },
+                { id: "medium", label: "보통 (Medium)", range: "F1 ~ F10.5", desc: "대부분의 표준형 모델이 잘 맞을 수 있습니다" },
+                { id: "large", label: "큰 편 (Large)", range: "F11 ~ F12+", desc: "묵직하고 크기가 있는 모델이 안정적일 수 있습니다" },
               ].map((item) => (
                 <button
                   key={item.id}
@@ -107,7 +107,7 @@ export default function MouseFitPage() {
                 >
                   <span className="mb-2 text-sm font-bold text-[var(--accent)]">{item.range}</span>
                   <span className="mb-1 text-xl font-bold text-[var(--primary)]">{item.label}</span>
-                  <span className="text-xs text-[var(--muted)]">{item.desc}</span>
+                  <span className="text-center text-xs text-[var(--muted)]">{item.desc}</span>
                 </button>
               ))}
             </div>
@@ -123,15 +123,15 @@ export default function MouseFitPage() {
             className="space-y-8"
           >
             <div className="text-center md:text-left">
-              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">가장 선호하는 파지법(그립)은?</h2>
-              <p className="text-sm text-[var(--muted)]">마우스를 쥘 때 손바닥과 손가락이 닿는 방식을 선택하세요.</p>
+              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">평소 마우스를 어떻게 쥐시나요?</h2>
+              <p className="text-sm text-[var(--muted)]">가장 편안하다고 느껴지는 손 모양을 선택해주세요.</p>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               {[
-                { id: "palm", label: "Palm (팜 그립)", desc: "손바닥 전체가 밀착되어 안정감 우선" },
-                { id: "claw", label: "Claw (클로 그립)", desc: "손가락 끝과 손목 뒷부분만 밀착" },
-                { id: "fingertip", label: "Fingertip (핑거 그립)", desc: "손가락 끝만 사용하여 빠른 컨트롤" },
+                { id: "palm", label: "팜 그립 (Palm)", desc: "손바닥 전체를 마우스에 얹는 가장 일반적인 방식" },
+                { id: "claw", label: "클로 그립 (Claw)", desc: "손가락 끝을 세우고 손바닥 뒷부분만 밀착하는 방식" },
+                { id: "fingertip", label: "핑거 그립 (Fingertip)", desc: "손바닥을 떼고 손가락 끝으로만 조작하는 방식" },
               ].map((item) => (
                 <button
                   key={item.id}
@@ -221,8 +221,9 @@ export default function MouseFitPage() {
 
             <div className="rounded-2xl bg-[var(--accent)]/5 p-6 border border-[var(--accent)]/10">
               <p className="text-xs leading-relaxed text-[var(--accent)] opacity-80">
-                * 위 결과는 일반적인 사용자 통계에 기반한 추천이며, 개인의 세밀한 습관이나 감도 설정에 따라 체감 그립감은 다를 수 있습니다. 
-                가급적 오프라인 매장에서 한 번 더 직접 쥐어보시는 것을 권장합니다.
+                * 위 추천 결과는 많은 사용자가 편안함을 느끼는 통계적 수치에 기반하고 있습니다. 
+                개인의 세밀한 습관이나 감도(DPI) 설정에 따라 체감은 달라질 수 있으니, 
+                가능하다면 오프라인 매장에서 직접 쥐어보며 자신만의 최적의 그립감을 확인해보시는 것을 권장합니다.
               </p>
             </div>
           </motion.div>

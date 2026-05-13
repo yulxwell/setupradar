@@ -1,4 +1,4 @@
-import { Monitor, MousePointer2, Zap, Mouse, Keyboard, ArrowRight, ShieldCheck, LayoutGrid } from "lucide-react";
+import { Monitor, MousePointer2, Zap, Mouse, Keyboard, ArrowRight, ShieldCheck, LayoutGrid, Info } from "lucide-react";
 import { TestCard, GuideCard } from "@/components/cards/Cards";
 import Link from "next/link";
 
@@ -47,27 +47,27 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <TestCard 
             title="불량화소 테스트" 
-            description="모니터 구매 후 가장 먼저 해야 할 픽셀 결함 점검입니다. 9가지 색상으로 완벽히 진단합니다."
+            description="새 모니터의 화면 결함을 점검합니다. 색상별 전체화면을 통해 숨겨진 점을 찾아낼 수 있습니다."
             href="/kr/tests/dead-pixel"
             icon={Monitor}
             duration="1~3분"
-            purpose="결함(데드픽셀) 유무 확인"
+            purpose="화면 속 작은 점(결함) 유무 확인"
           />
           <TestCard 
             title="더블클릭 테스트" 
-            description="마우스 스위치 노후화로 인한 중복 입력을 정밀 분석하여 교체 시기를 판별합니다."
+            description="마우스가 한 번 클릭으로 두 번 눌리는 증상을 진단하여 수리나 교체 시기를 판별합니다."
             href="/kr/tests/double-click"
             icon={MousePointer2}
             duration="30초"
-            purpose="스위치 채터링 진단"
+            purpose="마우스 고장 및 오작동 진단"
           />
           <TestCard 
             title="폴링레이트 측정" 
-            description="마우스의 실제 데이터 전송 속도(Hz)를 실시간 그래프와 함께 정밀하게 확인합니다."
+            description="마우스가 PC와 얼마나 빠르게 통신하는지 측정하여 실제 성능이 정상인지 확인합니다."
             href="/kr/tests/polling-rate"
             icon={Zap}
             duration="10초"
-            purpose="성능 및 연결 안정성 확인"
+            purpose="전송 속도 및 연결 안정성 확인"
           />
         </div>
       </section>
@@ -98,6 +98,20 @@ export default function Home() {
             icon={ShieldCheck}
           />
         </div>
+        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <GuideCard 
+            title="키보드 스위치 가이드" 
+            description="감성적인 축 이름 뒤에 숨겨진 실제 체감과 스펙을 확인하세요." 
+            href="/kr/switches" 
+            icon={Zap}
+          />
+          <GuideCard 
+            title="하드웨어 용어 사전" 
+            description="어려운 하드웨어 용어와 스펙을 초보자 눈높이에서 풀어서 설명합니다." 
+            href="/kr/guides" 
+            icon={Info}
+          />
+        </div>
         <div className="mt-8 text-center">
           <Link href="/kr/guides" className="text-sm font-bold text-[var(--muted)] hover:text-[var(--primary)] transition-colors">
             모든 가이드 읽어보기 →
@@ -121,11 +135,11 @@ export default function Home() {
               <h3 className="text-xl font-bold text-[var(--primary)]">Mouse Fit Finder</h3>
             </div>
             <p className="text-sm text-[var(--muted)] leading-relaxed mb-6">
-              손 크기(F1~F12)와 그립 스타일을 분석하여 <br/>
-              손목에 무리가 없는 최적의 마우스를 추천합니다.
+              자신의 손 크기와 마우스를 잡는 습관에 맞춰 <br/>
+              가장 편안하고 무리가 없는 마우스를 찾아보세요.
             </p>
             <div className="flex items-center gap-2 text-sm font-bold text-[var(--accent)]">
-              측정 시작하기 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              나의 마우스 찾기 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </div>
           </Link>
 
@@ -137,11 +151,11 @@ export default function Home() {
               <h3 className="text-xl font-bold text-[var(--primary)]">Keyboard Finder</h3>
             </div>
             <p className="text-sm text-[var(--muted)] leading-relaxed mb-6">
-              선호하는 타건감과 배열을 바탕으로 <br/>
-              당신의 업무와 게임을 더 즐겁게 만들 키보드를 찾습니다.
+              원하는 소리와 타건감을 바탕으로 <br/>
+              당신의 타이핑을 즐겁게 만들 키보드를 추천합니다.
             </p>
             <div className="flex items-center gap-2 text-sm font-bold text-[var(--accent)]">
-              취향 분석하기 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              나의 키보드 찾기 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </div>
           </Link>
         </div>

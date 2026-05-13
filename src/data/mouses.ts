@@ -1,20 +1,4 @@
-export interface Mouse {
-  id: string;
-  name: string;
-  brand: string;
-  dimensions: {
-    length: number; // mm
-    width: number;  // mm
-    height: number; // mm
-  };
-  weight: number;   // g
-  sensor: string;
-  recommendedGrips: ("palm" | "claw" | "fingertip")[];
-  handSizeRange: "small" | "medium" | "large" | "all";
-  priceRange: string;
-  imageUrl?: string;
-  features: string[];
-}
+import { Mouse } from "@/types";
 
 export const MOUSE_DATABASE: Mouse[] = [
   {

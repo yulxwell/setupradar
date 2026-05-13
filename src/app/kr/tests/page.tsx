@@ -19,55 +19,55 @@ export default function TestsPage() {
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <TestCard 
           title="불량화소 테스트" 
-          description="9가지 색상 전채화면을 통해 데드픽셀, 휘점, 암점을 완벽하게 찾아냅니다."
+          description="색상별 전체화면을 통해 화면 속 작은 점(불량화소)이 있는지 확인합니다."
           href="/kr/tests/dead-pixel"
           icon={Monitor}
           duration="1~3분"
-          purpose="픽셀 결함 점검"
-          caution="화면 먼지를 미리 닦아주세요"
+          purpose="화면 결함 유무 확인"
+          caution="먼지를 닦으면 더 정확할 수 있습니다"
         />
         <TestCard 
           title="빛샘 / IPS Glow" 
-          description="어두운 화면에서 패널의 조명 균일도와 시야각 특성을 확인합니다."
+          description="어두운 곳에서 화면 가장자리가 하얗게 들뜨는 현상을 점검합니다."
           href="/kr/tests/backlight-bleed"
           icon={Monitor}
           duration="2분"
-          purpose="백라이트 품질 체크"
-          caution="어두운 환경에서 정확합니다"
+          purpose="빛샘 및 패널 균일도 확인"
+          caution="주변이 어두울 때 정확할 수 있습니다"
         />
         <TestCard 
           title="더블클릭 테스트" 
-          description="마우스 스위치 노후화로 인한 비정상적인 중복 입력을 진단합니다."
+          description="한 번만 눌렀는데 두 번 클릭되는 마우스 고장 증상을 진단합니다."
           href="/kr/tests/double-click"
           icon={MousePointer2}
           duration="1분 내외"
-          purpose="스위치 채터링 점검"
-          caution="마우스 설정에 따라 다를 수 있음"
+          purpose="스위치 고장 가능성 확인"
+          caution="브라우저 설정에 따라 다를 수 있습니다"
         />
         <TestCard 
           title="CPS 테스트" 
-          description="자신의 클릭 속도(Clicks Per Second) 등급을 측정해 보세요."
+          description="1초당 몇 번의 클릭이 가능한지 자신의 속도를 측정해보세요."
           href="/kr/tests/cps"
           icon={Mouse}
           duration="5~30초"
-          purpose="클릭 피지컬 측정"
+          purpose="클릭 속도 및 반응 확인"
         />
         <TestCard 
           title="폴링레이트 측정" 
-          description="마우스 전송 속도(Hz)가 설정값만큼 정상적으로 나오는지 측정합니다."
+          description="마우스가 PC와 데이터를 주고받는 실제 속도를 확인합니다."
           href="/kr/tests/polling-rate"
           icon={Zap}
           duration="10초"
-          purpose="데이터 전송률 확인"
-          caution="브라우저 환경의 한계가 있음"
+          purpose="전송 속도(Hz) 정상 여부 확인"
+          caution="환경에 따라 오차가 있을 수 있습니다"
         />
         <TestCard 
           title="키보드 동시입력" 
-          description="여러 키를 동시에 눌렀을 때의 인식 개수와 누락 여부를 테스트합니다."
+          description="여러 키를 동시에 눌렀을 때 모두 잘 인식되는지 테스트합니다."
           href="/kr/tests/keyboard-rollover"
           icon={Keyboard}
           duration="1분"
-          purpose="N-Key Rollover 확인"
+          purpose="동시 입력(무한입력) 확인"
         />
       </div>
 

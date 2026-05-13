@@ -93,10 +93,10 @@ export default function KeyboardFitPage() {
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
-                { id: "full", label: "Full Size", desc: "숫자패드 포함 표준" },
-                { id: "tkl", label: "TKL (80%)", desc: "숫자패드 제거" },
-                { id: "75%", label: "75%", desc: "컴팩트 + 방향키" },
-                { id: "65%", label: "65%", desc: "극강의 공간 효율" },
+                { id: "full", label: "풀 사이즈 (100%)", desc: "숫자패드가 있어 엑셀이나 작업에 편리할 수 있습니다" },
+                { id: "tkl", label: "텐키리스 (80%)", desc: "숫자패드를 없애 마우스 공간을 넓게 쓸 수 있습니다" },
+                { id: "75%", label: "75% 배열", desc: "필요한 키는 유지하면서 크기를 더 줄인 실용적인 배열입니다" },
+                { id: "65%", label: "65% 배열", desc: "극강의 공간 효율을 위해 크기를 최소화한 배열입니다" },
               ].map((item) => (
                 <button
                   key={item.id}
@@ -108,7 +108,7 @@ export default function KeyboardFitPage() {
                 >
                   <Layout className="mb-4 h-8 w-8 text-[var(--muted)] opacity-50 group-hover:text-[var(--accent)] group-hover:opacity-100" />
                   <span className="mb-1 text-lg font-bold text-[var(--primary)]">{item.label}</span>
-                  <span className="text-center text-xs text-[var(--muted)]">{item.desc}</span>
+                  <span className="text-center text-xs text-[var(--muted)] leading-tight">{item.desc}</span>
                 </button>
               ))}
             </div>
@@ -130,9 +130,9 @@ export default function KeyboardFitPage() {
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               {[
-                { id: "linear", label: "Linear (리니어)", desc: "걸림 없이 매끄러운 입력" },
-                { id: "tactile", label: "Tactile (넌클릭)", desc: "구분감이 느껴지는 타건감" },
-                { id: "clicky", label: "Clicky (클릭)", desc: "찰칵거리는 경쾌한 소리" },
+                { id: "linear", label: "Linear (리니어)", desc: "걸림 없이 매끄럽게 눌리는 부드러운 타입", detail: "소음이 적고 반응이 빨라 게이밍과 사무용 모두 무난할 수 있습니다." },
+                { id: "tactile", label: "Tactile (넌클릭)", desc: "중간에 톡 걸리는 구분감이 느껴지는 타입", detail: "타이핑할 때 확실한 피드백을 원하는 분들에게 잘 맞을 수 있습니다." },
+                { id: "clicky", label: "Clicky (클릭)", desc: "찰칵거리는 경쾌한 소리와 강한 구분감", detail: "기계식 특유의 소리를 즐긴다면 좋으나, 조용한 장소에서는 주의가 필요합니다." },
               ].map((item) => (
                 <button
                   key={item.id}
@@ -144,7 +144,8 @@ export default function KeyboardFitPage() {
                 >
                   <Zap className="mb-4 h-10 w-10 text-[var(--muted)] opacity-50 group-hover:text-[var(--accent)] group-hover:opacity-100" />
                   <span className="mb-2 text-lg font-bold text-[var(--primary)]">{item.label}</span>
-                  <span className="text-center text-xs text-[var(--muted)]">{item.desc}</span>
+                  <span className="text-center text-xs font-bold text-[var(--accent)] mb-2">{item.desc}</span>
+                  <span className="text-center text-[10px] text-[var(--muted)] leading-relaxed">{item.detail}</span>
                 </button>
               ))}
             </div>
