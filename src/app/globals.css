@@ -6,14 +6,27 @@
 }
 
 :root {
-  --background: #0f172a; /* Slate 950 - Calm professional dark */
-  --foreground: #f8fafc;
-  --card: #1e293b;
-  --card-foreground: #f8fafc;
-  --border: rgba(255, 255, 255, 0.06);
-  --primary: #3b82f6; /* Muted blue */
-  --secondary: #64748b;
-  --accent: #0ea5e9; /* Soft cyan */
+  --background: #fdfcfb; /* Warm Off-White */
+  --foreground: #111827; /* Gray 900 */
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --border: #e5e7eb; /* Gray 200 */
+  --muted: #6b7280; /* Gray 500 */
+  --primary: #111827; /* Charcoal */
+  --accent: #b45309; /* Muted Amber */
+  --secondary: #f3f4f6; /* Gray 100 */
+}
+
+.dark {
+  --background: #09090b; /* Zinc 950 */
+  --foreground: #f4f4f5; /* Zinc 100 */
+  --card: #18181b; /* Zinc 900 */
+  --card-foreground: #f4f4f5;
+  --border: #27272a; /* Zinc 800 */
+  --muted: #a1a1aa; /* Zinc 400 */
+  --primary: #f4f4f5; /* Zinc 100 */
+  --accent: #f59e0b; /* Amber 500 */
+  --secondary: #27272a; /* Zinc 800 */
 }
 
 body {
@@ -21,10 +34,12 @@ body {
   color: var(--foreground);
   font-family: var(--font-inter);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-outfit);
+  color: var(--primary);
 }
 
 /* Subtle Custom Scrollbar */
@@ -37,12 +52,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: var(--border);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: var(--muted);
 }
 
 /* Animations */
@@ -66,9 +81,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Utility for clean cards */
-.glass-card {
-  background: rgba(30, 41, 59, 0.5);
-  backdrop-filter: blur(8px);
+.custom-card {
+  background: var(--card);
   border: 1px solid var(--border);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.custom-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dark .custom-card:hover {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
 }

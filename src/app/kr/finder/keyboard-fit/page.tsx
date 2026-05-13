@@ -36,15 +36,15 @@ export default function KeyboardFitPage() {
     <div className="container mx-auto px-4 py-12 max-w-4xl min-h-[70vh]">
       <Link 
         href="/kr" 
-        className="mb-8 inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+        className="mb-8 inline-flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--primary)] transition-colors"
       >
         <ChevronLeft className="h-4 w-4" />
         메인으로 돌아가기
       </Link>
 
       <div className="mb-12">
-        <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white md:text-4xl">Keyboard Finder</h1>
-        <p className="text-slate-500 dark:text-slate-400">사용 목적과 취향에 맞는 기계식 키보드를 찾아드립니다.</p>
+        <h1 className="mb-2 text-3xl font-bold text-[var(--primary)] md:text-4xl">Keyboard Finder</h1>
+        <p className="text-[var(--muted)]">사용 목적과 취향에 맞는 기계식 키보드를 찾아드립니다.</p>
       </div>
 
       {/* Progress Bar */}
@@ -61,17 +61,17 @@ export default function KeyboardFitPage() {
             <div key={s.id} className="flex flex-1 items-center gap-3">
               <div className={cn(
                 "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 transition-all",
-                isActive ? "border-blue-600 bg-blue-600 text-white shadow-lg shadow-blue-500/20" : 
-                isDone ? "border-green-500 bg-green-500 text-white" : 
-                "border-slate-200 bg-white text-slate-400 dark:border-slate-800 dark:bg-slate-900"
+                isActive ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--background)] shadow-lg shadow-[var(--accent)]/20" : 
+                isDone ? "border-emerald-600 bg-emerald-600 text-white" : 
+                "border-[var(--border)] bg-[var(--background)] text-[var(--muted)]"
               )}>
                 <s.icon className="h-5 w-5" />
               </div>
               <div className="hidden md:block">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Step 0{idx + 1}</p>
-                <p className={cn("text-sm font-bold", isActive ? "text-slate-900 dark:text-white" : "text-slate-400")}>{s.label}</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--muted)] opacity-60">Step 0{idx + 1}</p>
+                <p className={cn("text-sm font-bold", isActive ? "text-[var(--primary)]" : "text-[var(--muted)]")}>{s.label}</p>
               </div>
-              {idx < 2 && <div className="hidden flex-1 border-t-2 border-slate-100 dark:border-slate-800 md:block" />}
+              {idx < 2 && <div className="hidden flex-1 border-t-2 border-[var(--border)] md:block" />}
             </div>
           );
         })}
@@ -87,8 +87,8 @@ export default function KeyboardFitPage() {
             className="space-y-8"
           >
             <div className="text-center md:text-left">
-              <h2 className="mb-2 text-2xl font-bold text-slate-900 dark:text-white">어떤 배열을 선호하시나요?</h2>
-              <p className="text-sm text-slate-500">책상 공간과 숫자패드 필요 여부에 따라 선택하세요.</p>
+              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">어떤 배열을 선호하시나요?</h2>
+              <p className="text-sm text-[var(--muted)]">책상 공간과 숫자패드 필요 여부에 따라 선택하세요.</p>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -104,11 +104,11 @@ export default function KeyboardFitPage() {
                     setLayout(item.id as KeyboardLayout);
                     setStep("switch");
                   }}
-                  className="group flex flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-600 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/40"
+                  className="group flex flex-col items-center rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6 transition-all hover:border-[var(--accent)] hover:bg-[var(--secondary)]/50 hover:shadow-xl"
                 >
-                  <Layout className="mb-4 h-8 w-8 text-slate-400 group-hover:text-blue-600" />
-                  <span className="mb-1 text-lg font-bold text-slate-900 dark:text-white">{item.label}</span>
-                  <span className="text-center text-xs text-slate-500">{item.desc}</span>
+                  <Layout className="mb-4 h-8 w-8 text-[var(--muted)] opacity-50 group-hover:text-[var(--accent)] group-hover:opacity-100" />
+                  <span className="mb-1 text-lg font-bold text-[var(--primary)]">{item.label}</span>
+                  <span className="text-center text-xs text-[var(--muted)]">{item.desc}</span>
                 </button>
               ))}
             </div>
@@ -124,8 +124,8 @@ export default function KeyboardFitPage() {
             className="space-y-8"
           >
             <div className="text-center md:text-left">
-              <h2 className="mb-2 text-2xl font-bold text-slate-900 dark:text-white">선호하는 타건감은?</h2>
-              <p className="text-sm text-slate-500">소음 정도와 손끝에 느껴지는 걸림을 선택하세요.</p>
+              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">선호하는 타건감은?</h2>
+              <p className="text-sm text-[var(--muted)]">소음 정도와 손끝에 느껴지는 걸림을 선택하세요.</p>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -140,18 +140,18 @@ export default function KeyboardFitPage() {
                     setSwitchType(item.id as SwitchType);
                     setStep("result");
                   }}
-                  className="group flex flex-col items-center rounded-2xl border border-slate-200 bg-white p-8 transition-all hover:border-blue-600 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/40"
+                  className="group flex flex-col items-center rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-8 transition-all hover:border-[var(--accent)] hover:bg-[var(--secondary)]/50 hover:shadow-xl"
                 >
-                  <Zap className="mb-4 h-10 w-10 text-slate-400 group-hover:text-blue-600" />
-                  <span className="mb-2 text-lg font-bold text-slate-900 dark:text-white">{item.label}</span>
-                  <span className="text-center text-xs text-slate-500">{item.desc}</span>
+                  <Zap className="mb-4 h-10 w-10 text-[var(--muted)] opacity-50 group-hover:text-[var(--accent)] group-hover:opacity-100" />
+                  <span className="mb-2 text-lg font-bold text-[var(--primary)]">{item.label}</span>
+                  <span className="text-center text-xs text-[var(--muted)]">{item.desc}</span>
                 </button>
               ))}
             </div>
             
             <button 
               onClick={() => setStep("layout")}
-              className="flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-slate-600"
+              className="flex items-center gap-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--primary)]"
             >
               <ChevronLeft className="h-4 w-4" /> 이전 단계로
             </button>
@@ -167,19 +167,19 @@ export default function KeyboardFitPage() {
           >
             <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
               <div className="text-center md:text-left">
-                <h2 className="mb-2 text-2xl font-bold text-slate-900 dark:text-white">당신을 위한 키보드 추천 결과</h2>
+                <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">당신을 위한 키보드 추천 결과</h2>
                 <div className="flex flex-wrap gap-2">
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800">
+                  <span className="rounded-full bg-[var(--secondary)] px-3 py-1 text-xs font-bold text-[var(--muted)] border border-[var(--border)]">
                     배열: {layout}
                   </span>
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800">
+                  <span className="rounded-full bg-[var(--secondary)] px-3 py-1 text-xs font-bold text-[var(--muted)] border border-[var(--border)]">
                     스위치: {switchType?.toUpperCase()}
                   </span>
                 </div>
               </div>
               <button 
                 onClick={reset}
-                className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950"
+                className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--secondary)] px-5 py-3 text-sm font-bold text-[var(--primary)] hover:bg-[var(--secondary)]/80"
               >
                 <RotateCcw className="h-4 w-4" /> 다시 하기
               </button>
@@ -190,21 +190,21 @@ export default function KeyboardFitPage() {
                 {filteredKeyboards.map((kb) => (
                   <div 
                     key={kb.id}
-                    className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60"
+                    className="flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6"
                   >
                     <div className="mb-4 flex items-center justify-between">
-                      <span className="text-xs font-bold text-blue-600 uppercase tracking-tighter">{kb.brand}</span>
-                      <span className="text-sm font-bold text-slate-900 dark:text-white">{kb.priceRange}</span>
+                      <span className="text-xs font-bold text-[var(--accent)] uppercase tracking-tighter">{kb.brand}</span>
+                      <span className="text-sm font-bold text-[var(--primary)]">{kb.priceRange}</span>
                     </div>
-                    <h3 className="mb-2 text-xl font-bold text-slate-900 dark:text-white">{kb.name}</h3>
+                    <h3 className="mb-2 text-xl font-bold text-[var(--primary)]">{kb.name}</h3>
                     <div className="mb-6 space-y-1.5">
-                      <p className="text-xs text-slate-500">배열: {kb.layout}</p>
-                      <p className="text-xs text-slate-500">소재: {kb.material.charAt(0).toUpperCase() + kb.material.slice(1)}</p>
-                      <p className="text-xs text-slate-500">핫스왑: {kb.isHotSwap ? "지원" : "미지원"}</p>
+                      <p className="text-xs text-[var(--muted)]">배열: {kb.layout}</p>
+                      <p className="text-xs text-[var(--muted)]">소재: {kb.material.charAt(0).toUpperCase() + kb.material.slice(1)}</p>
+                      <p className="text-xs text-[var(--muted)]">핫스왑: {kb.isHotSwap ? "지원" : "미지원"}</p>
                     </div>
                     <div className="mt-auto flex flex-wrap gap-1.5">
                       {kb.features.map(f => (
-                        <span key={f} className="rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
+                        <span key={f} className="rounded-md bg-[var(--accent)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--accent)]">
                           {f}
                         </span>
                       ))}
@@ -213,10 +213,10 @@ export default function KeyboardFitPage() {
                 ))}
               </div>
             ) : (
-              <div className="rounded-2xl border-2 border-dashed border-slate-200 p-20 text-center dark:border-slate-800">
-                <Info className="mx-auto mb-4 h-10 w-10 text-slate-300" />
-                <p className="text-lg font-bold text-slate-900 dark:text-white">아직 완벽하게 일치하는 제품이 없네요.</p>
-                <p className="text-sm text-slate-500">데이터베이스를 계속 업데이트 중입니다!</p>
+              <div className="rounded-2xl border-2 border-dashed border-[var(--border)] p-20 text-center">
+                <Info className="mx-auto mb-4 h-10 w-10 text-[var(--muted)] opacity-30" />
+                <p className="text-lg font-bold text-[var(--primary)]">아직 완벽하게 일치하는 제품이 없네요.</p>
+                <p className="text-sm text-[var(--muted)]">데이터베이스를 계속 업데이트 중입니다!</p>
               </div>
             )}
           </motion.div>

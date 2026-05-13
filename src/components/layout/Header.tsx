@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Monitor, Keyboard, Search, Menu, X } from "lucide-react";
+import { Monitor, Keyboard, Search, Menu, X, Sun, Moon } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/components/providers/ThemeProvider";
 
 const navigation = [
   { name: "테스트 도구", href: "/kr/tests", icon: Monitor },
@@ -16,16 +17,17 @@ const navigation = [
 export function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/[0.05] bg-slate-950/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-8">
           <Link href="/kr" className="flex items-center gap-2 transition-opacity hover:opacity-90">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary)] text-[var(--background)]">
               <Monitor className="h-5 w-5" />
             </div>
-            <span className="font-outfit text-xl font-black tracking-tight text-white">SetupRadar</span>
+            <span className="font-outfit text-xl font-black tracking-tight text-[var(--primary)]">SetupRadar</span>
           </Link>
           
           <nav className="hidden md:flex items-center gap-1">
@@ -38,8 +40,8 @@ export function Header() {
                   className={cn(
                     "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold transition-all",
                     isActive 
-                      ? "bg-white/5 text-blue-400" 
-                      : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
+                      ? "bg-[var(--secondary)] text-[var(--accent)]" 
+                      : "text-[var(--muted)] hover:bg-[var(--secondary)] hover:text-[var(--primary)]"
                   )}
                 >
                   {item.name}
@@ -49,16 +51,24 @@ export function Header() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleTheme}
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--border)] text-[var(--muted)] transition-all hover:bg-[var(--secondary)] hover:text-[var(--primary)]"
+            aria-label="Toggle theme"
+          >
+            {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+          </button>
+
           <Link 
             href="/kr/tests" 
-            className="hidden sm:flex h-10 items-center justify-center rounded-lg bg-blue-600 px-5 text-sm font-bold text-white transition-all hover:bg-blue-500"
+            className="hidden sm:flex h-10 items-center justify-center rounded-lg bg-[var(--primary)] px-5 text-sm font-bold text-[var(--background)] transition-all hover:opacity-90"
           >
             시작하기
           </Link>
           
           <button 
-            className="flex md:hidden p-2 text-slate-400"
+            className="flex md:hidden p-2 text-[var(--muted)]"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -68,7 +78,7 @@ export function Header() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-white/[0.05] bg-slate-950 px-4 py-6 animate-in slide-in-from-top duration-300">
+        <div className="md:hidden border-t border-[var(--border)] bg-[var(--background)] px-4 py-6 animate-in slide-in-from-top duration-300">
           <nav className="flex flex-col gap-2">
             {navigation.map((item) => (
               <Link
@@ -77,7 +87,7 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
                   "flex items-center gap-3 rounded-xl p-4 text-base font-bold",
-                  pathname.startsWith(item.href) ? "bg-blue-500/10 text-blue-400" : "text-slate-400"
+                  pathname.startsWith(item.href) ? "bg-[var(--secondary)] text-[var(--accent)]" : "text-[var(--muted)]"
                 )}
               >
                 <item.icon className="h-5 w-5" />
@@ -87,7 +97,7 @@ export function Header() {
             <Link 
               href="/kr/tests" 
               onClick={() => setMobileMenuOpen(false)}
-              className="mt-4 flex h-14 items-center justify-center rounded-xl bg-blue-600 text-lg font-bold text-white"
+              className="mt-4 flex h-14 items-center justify-center rounded-xl bg-[var(--primary)] text-lg font-bold text-[var(--background)]"
             >
               테스트 시작하기
             </Link>

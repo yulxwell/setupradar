@@ -4,9 +4,9 @@ import { GuideCard } from "@/components/cards/Cards";
 export default function GuidesPage() {
   return (
     <div className="mx-auto max-w-6xl py-16 px-4 md:py-24">
-      <div className="mb-16 text-left border-b border-slate-100 dark:border-slate-800 pb-8">
-        <h1 className="mb-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">하드웨어 구매 가이드</h1>
-        <p className="max-w-lg text-slate-500 dark:text-slate-400">
+      <div className="mb-16 text-left border-b border-[var(--border)] pb-8">
+        <h1 className="mb-4 text-3xl font-bold text-[var(--primary)] md:text-5xl">하드웨어 구매 가이드</h1>
+        <p className="max-w-lg text-[var(--muted)]">
           광고 문구 대신 실제 구매 시 확인해야 할 체크리스트와 핵심 정보를 정리했습니다.
         </p>
       </div>
@@ -44,9 +44,9 @@ export default function GuidesPage() {
         />
       </div>
 
-      <div className="mt-20 flex flex-col items-center justify-center p-12 text-center border border-slate-100 dark:border-slate-800 rounded-3xl bg-slate-50/50 dark:bg-slate-900/20">
-        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">장비 추천 기능 준비 중</h3>
-        <p className="text-sm text-slate-500 max-w-sm">
+      <div className="mt-20 flex flex-col items-center justify-center p-12 text-center border border-[var(--border)] rounded-3xl bg-[var(--secondary)]/30">
+        <h3 className="text-lg font-bold text-[var(--primary)] mb-2">장비 추천 기능 준비 중</h3>
+        <p className="text-sm text-[var(--muted)] max-w-sm">
           단순 정보 제공을 넘어, 사용자 데이터 기반 맞춤형 제품 매칭 시스템을 준비하고 있습니다.
         </p>
       </div>
