@@ -4,7 +4,8 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { ChevronLeft, Ruler, Hand, RotateCcw, CheckCircle2, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MOUSE_DATABASE } from "@/data/mouses";
+import { MOUSE_DATABASE } from "@/content/kr/products/mice";
+import { getContentDisplay } from "@/content/utils";
 import { cn } from "@/lib/utils";
 
 type Step = "size" | "grip" | "result";
@@ -186,30 +187,37 @@ export default function MouseFitPage() {
 
             {filteredMice.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                {filteredMice.map((mouse) => (
-                  <div 
-                    key={mouse.id}
-                    className="flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6"
-                  >
-                    <div className="mb-4 flex items-center justify-between">
-                      <span className="text-xs font-bold text-[var(--accent)] uppercase tracking-tighter">{mouse.brand}</span>
-                      <span className="text-sm font-bold text-[var(--primary)]">{mouse.priceRange}</span>
+                {filteredMice.map((mouse) => {
+                  const display = getContentDisplay(mouse);
+                  return (
+                    <div 
+                      key={mouse.id}
+                      className="flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6"
+                    >
+                      <div className="mb-4 flex items-center justify-between">
+                        <span className="text-xs font-bold text-[var(--accent)] uppercase tracking-tighter">{mouse.brand || "Unknown"}</span>
+                        <span className="text-sm font-bold text-[var(--primary)]">{mouse.priceRange}</span>
+                      </div>
+                      <h3 className="mb-2 text-xl font-bold text-[var(--primary)]">{mouse.name}</h3>
+                      <p className="mb-4 text-xs text-[var(--muted)] leading-relaxed">{display.summary}</p>
+                      <div className="mb-6 space-y-1.5">
+                        <p className="text-xs text-[var(--muted)] font-medium">주요 특징:</p>
+                        <ul className="list-inside list-disc">
+                          {display.strengths.slice(0, 2).map((s, i) => (
+                            <li key={i} className="text-[10px] text-[var(--muted)]">{s}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="mt-auto flex flex-wrap gap-1.5">
+                        {mouse.features.map(f => (
+                          <span key={f} className="rounded-md bg-[var(--accent)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--accent)]">
+                            {f}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <h3 className="mb-2 text-xl font-bold text-[var(--primary)]">{mouse.name}</h3>
-                    <div className="mb-6 space-y-1.5">
-                      <p className="text-xs text-[var(--muted)]">센서: {mouse.sensor}</p>
-                      <p className="text-xs text-[var(--muted)]">크기: {mouse.dimensions.length} x {mouse.dimensions.width} x {mouse.dimensions.height} mm</p>
-                      <p className="text-xs text-[var(--muted)]">무게: {mouse.weight}g</p>
-                    </div>
-                    <div className="mt-auto flex flex-wrap gap-1.5">
-                      {mouse.features.map(f => (
-                        <span key={f} className="rounded-md bg-[var(--accent)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--accent)]">
-                          {f}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="rounded-2xl border-2 border-dashed border-[var(--border)] p-20 text-center">

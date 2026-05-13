@@ -1,0 +1,42 @@
+import { KeyboardContent } from "../../types";
+
+export const KEYBOARD_DATABASE: KeyboardContent[] = [
+  {
+    id: "rainy75",
+    slug: "rainy75",
+    category: "keyboard",
+    brand: "WOB Lab",
+    name: "Rainy75",
+    layout: "75%",
+    switchType: ["linear"],
+    isHotSwap: true,
+    material: "aluminum",
+    status: "published",
+    updatedAt: "2024-05-14",
+    priceRange: "10만원대",
+    features: ["가성비 종결", "풀 알루미늄", "무선 3모드"],
+    specTags: ["75%", "Aluminum", "Wireless"],
+    aiSummaryKo: "가성비 알루미늄 키보드 시장을 뒤흔든 베스트셀러 모델입니다. 뛰어난 타건음과 빌드 퀄리티를 자랑합니다.",
+    aiStrengthsKo: ["압도적인 가성비", "순정 상태에서도 훌륭한 타건음", "세련된 디자인"],
+    aiCautionsKo: ["품절이 잦아 구매가 어려울 수 있음", "전용 소프트웨어의 편의성이 다소 부족함"],
+  },
+  {
+    id: "realforce-r3",
+    slug: "realforce-r3",
+    category: "keyboard",
+    brand: "Topre",
+    name: "Realforce R3",
+    layout: "full",
+    switchType: ["capacitive"],
+    isHotSwap: false,
+    material: "plastic",
+    status: "published",
+    updatedAt: "2024-05-14",
+    priceRange: "30만원대",
+    features: ["무접점 방식", "독보적인 타건감", "APC 기능"],
+    specTags: ["Full Layout", "Topre", "Silent"],
+    aiSummaryKo: "무접점 키보드의 끝판왕으로 불리는 리얼포스의 최신 모델입니다. 특유의 '초콜릿 부러뜨리는' 타건감이 특징입니다.",
+    aiStrengthsKo: ["독보적인 무접점 타건감", "긴 내구성", "뛰어난 안정성"],
+    aiCautionsKo: ["매우 높은 가격", "플라스틱 하우징에 대한 아쉬움"],
+  }
+];

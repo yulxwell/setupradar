@@ -4,8 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, Info, Search, Zap, Volume2, MessageSquare, Target, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
-import { SWITCH_DATABASE } from "@/data/switches";
-import { SwitchType } from "@/types";
+import { SWITCH_DATABASE } from "@/content/kr/switches";
+import { SwitchType } from "@/content/types";
+import { getContentDisplay } from "@/content/utils";
 import { cn } from "@/lib/utils";
 
 const TYPE_LABELS: Record<SwitchType, string> = {
@@ -24,9 +25,8 @@ export default function SwitchGuidePage() {
 
   const filteredSwitches = SWITCH_DATABASE.filter((s) => {
     const matchesSearch = 
-      s.nameKo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.marketingNameKo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.brand.toLowerCase().includes(searchTerm.toLowerCase());
+      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (s.brand?.toLowerCase().includes(searchTerm.toLowerCase()) || false);
     const matchesFilter = activeFilter === "all" || s.switchType === activeFilter;
     return matchesSearch && matchesFilter;
   });
@@ -106,92 +106,92 @@ export default function SwitchGuidePage() {
 
       {/* Switch Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {filteredSwitches.map((sw) => (
-          <motion.div
-            key={sw.id}
-            layout
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col rounded-3xl border border-[var(--border)] bg-[var(--secondary)]/20 p-6 hover:bg-[var(--secondary)]/40 transition-all shadow-sm"
-          >
-            <div className="mb-4 flex items-start justify-between">
-              <div>
-                <span className="mb-1 block text-[10px] font-bold text-[var(--accent)] uppercase tracking-widest">{sw.brand}</span>
-                <h3 className="text-xl font-bold text-[var(--primary)]">{sw.nameKo}</h3>
-                {sw.marketingNameKo && (
-                  <p className="mt-1 text-xs text-[var(--muted)] font-medium">별칭: {sw.marketingNameKo}</p>
+        {filteredSwitches.map((sw) => {
+          const display = getContentDisplay(sw);
+          return (
+            <motion.div
+              key={sw.id}
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col rounded-3xl border border-[var(--border)] bg-[var(--secondary)]/20 p-6 hover:bg-[var(--secondary)]/40 transition-all shadow-sm"
+            >
+              <div className="mb-4 flex items-start justify-between">
+                <div>
+                  <span className="mb-1 block text-[10px] font-bold text-[var(--accent)] uppercase tracking-widest">{sw.brand || "Unknown"}</span>
+                  <h3 className="text-xl font-bold text-[var(--primary)]">{sw.name}</h3>
+                </div>
+                <div className="rounded-lg bg-[var(--accent)]/10 px-2 py-1 text-[10px] font-bold text-[var(--accent)]">
+                  {TYPE_LABELS[sw.switchType]}
+                </div>
+              </div>
+
+              <div className="mb-6 space-y-4">
+                <div className="flex items-start gap-3">
+                  <MessageSquare className="mt-1 h-4 w-4 shrink-0 text-[var(--muted)]" />
+                  <div>
+                    <p className="text-sm font-bold text-[var(--primary)]">어떤 느낌인가요?</p>
+                    <p className="text-xs text-[var(--muted)] leading-relaxed">{display.beginnerSummary}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Target className="mt-1 h-4 w-4 shrink-0 text-[var(--muted)]" />
+                  <div>
+                    <p className="text-sm font-bold text-[var(--primary)]">추천 대상</p>
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {sw.bestFor.map(b => (
+                        <span key={b} className="rounded bg-[var(--secondary)] px-1.5 py-0.5 text-[9px] font-bold text-[var(--muted)] border border-[var(--border)]">
+                          #{b}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 rounded-2xl bg-[var(--background)]/50 p-4 border border-[var(--border)]/50">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-[var(--muted)]">
+                      <Zap className="h-3 w-3" /> 키압 (입력/바닥)
+                    </div>
+                    <p className="text-xs font-bold text-[var(--primary)]">
+                      {sw.actuationForceG || "?"}g / {sw.bottomOutForceG || "?"}g
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-[var(--muted)]">
+                      <Volume2 className="h-3 w-3" /> 소음 수준
+                    </div>
+                    <p className="text-xs font-bold text-[var(--primary)] uppercase">
+                      {sw.soundLevel}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-auto space-y-3">
+                {display.namingWarning && (
+                  <div className="flex items-start gap-2 rounded-xl bg-amber-500/10 p-3 border border-amber-500/20">
+                    <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-600" />
+                    <p className="text-[11px] font-medium leading-relaxed text-amber-700">
+                      {display.namingWarning}
+                    </p>
+                  </div>
                 )}
-              </div>
-              <div className="rounded-lg bg-[var(--accent)]/10 px-2 py-1 text-[10px] font-bold text-[var(--accent)]">
-                {TYPE_LABELS[sw.switchType]}
-              </div>
-            </div>
-
-            <div className="mb-6 space-y-4">
-              <div className="flex items-start gap-3">
-                <MessageSquare className="mt-1 h-4 w-4 shrink-0 text-[var(--muted)]" />
-                <div>
-                  <p className="text-sm font-bold text-[var(--primary)]">어떤 느낌인가요?</p>
-                  <p className="text-xs text-[var(--muted)] leading-relaxed">{sw.beginnerSummaryKo}</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <Target className="mt-1 h-4 w-4 shrink-0 text-[var(--muted)]" />
-                <div>
-                  <p className="text-sm font-bold text-[var(--primary)]">추천 대상</p>
-                  <div className="mt-1 flex flex-wrap gap-1">
-                    {sw.bestFor.map(b => (
-                      <span key={b} className="rounded bg-[var(--secondary)] px-1.5 py-0.5 text-[9px] font-bold text-[var(--muted)] border border-[var(--border)]">
-                        #{b}
-                      </span>
+                
+                <div className="space-y-1.5">
+                  <p className="text-[11px] font-bold text-[var(--primary)]">구매 전 체크!</p>
+                  <ul className="list-inside list-disc space-y-1 text-[10px] text-[var(--muted)]">
+                    {display.buyingCheck.map((c, i) => (
+                      <li key={i}>{c}</li>
                     ))}
-                  </div>
+                    <li>{display.caution}</li>
+                  </ul>
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-4 rounded-2xl bg-[var(--background)]/50 p-4 border border-[var(--border)]/50">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-[var(--muted)]">
-                    <Zap className="h-3 w-3" /> 키압 (입력/바닥)
-                  </div>
-                  <p className="text-xs font-bold text-[var(--primary)]">
-                    {sw.actuationForceG || "?"}g / {sw.bottomOutForceG || "?"}g
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-[var(--muted)]">
-                    <Volume2 className="h-3 w-3" /> 소음 수준
-                  </div>
-                  <p className="text-xs font-bold text-[var(--primary)] uppercase">
-                    {sw.soundLevel}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-auto space-y-3">
-              {sw.namingWarningKo && (
-                <div className="flex items-start gap-2 rounded-xl bg-amber-500/10 p-3 border border-amber-500/20">
-                  <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-600" />
-                  <p className="text-[11px] font-medium leading-relaxed text-amber-700">
-                    {sw.namingWarningKo}
-                  </p>
-                </div>
-              )}
-              
-              <div className="space-y-1.5">
-                <p className="text-[11px] font-bold text-[var(--primary)]">구매 전 체크!</p>
-                <ul className="list-inside list-disc space-y-1 text-[10px] text-[var(--muted)]">
-                  {sw.buyingCheckKo.map((c, i) => (
-                    <li key={i}>{c}</li>
-                  ))}
-                  <li>{sw.cautionKo}</li>
-                </ul>
-              </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Summary Section */}

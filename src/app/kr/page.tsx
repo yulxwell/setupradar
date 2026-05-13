@@ -1,3 +1,4 @@
+import { SITE_COPY } from "@/content/kr/siteCopy";
 import { Monitor, MousePointer2, Zap, Mouse, Keyboard, ArrowRight, ShieldCheck, LayoutGrid, Info } from "lucide-react";
 import { TestCard, GuideCard } from "@/components/cards/Cards";
 import Link from "next/link";
@@ -16,11 +17,10 @@ export default function Home() {
           </div>
           <h1 className="mb-6 font-outfit text-4xl font-bold tracking-tight text-[var(--primary)] md:text-6xl lg:text-7xl">
             장비의 상태를 <br className="md:hidden" />
-            <span className="text-[var(--accent)]">객관적으로</span> 확인하세요.
+            <span className="text-[var(--accent)]">{SITE_COPY.hero.titleHighlight}</span> 확인하세요.
           </h1>
           <p className="mx-auto mb-10 max-w-2xl text-base text-[var(--muted)] md:text-lg leading-relaxed">
-            별도의 소프트웨어 설치 없이 브라우저에서 즉시 시작하는 <br className="hidden md:block" />
-            고정밀 PC 하드웨어 진단 도구 및 스마트 구매 가이드입니다.
+            {SITE_COPY.hero.description}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link href="/kr/tests" className="flex h-12 items-center justify-center rounded-xl bg-[var(--primary)] px-8 text-sm font-bold text-[var(--background)] transition-all hover:opacity-90 active:scale-95">

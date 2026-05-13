@@ -4,7 +4,8 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { ChevronLeft, Layout, Zap, RotateCcw, CheckCircle2, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { KEYBOARD_DATABASE } from "@/data/keyboards";
+import { KEYBOARD_DATABASE } from "@/content/kr/products/keyboards";
+import { getContentDisplay } from "@/content/utils";
 import { cn } from "@/lib/utils";
 
 type Step = "layout" | "switch" | "result";
@@ -188,30 +189,37 @@ export default function KeyboardFitPage() {
 
             {filteredKeyboards.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                {filteredKeyboards.map((kb) => (
-                  <div 
-                    key={kb.id}
-                    className="flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6"
-                  >
-                    <div className="mb-4 flex items-center justify-between">
-                      <span className="text-xs font-bold text-[var(--accent)] uppercase tracking-tighter">{kb.brand}</span>
-                      <span className="text-sm font-bold text-[var(--primary)]">{kb.priceRange}</span>
+                {filteredKeyboards.map((kb) => {
+                  const display = getContentDisplay(kb);
+                  return (
+                    <div 
+                      key={kb.id}
+                      className="flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6"
+                    >
+                      <div className="mb-4 flex items-center justify-between">
+                        <span className="text-xs font-bold text-[var(--accent)] uppercase tracking-tighter">{kb.brand || "Unknown"}</span>
+                        <span className="text-sm font-bold text-[var(--primary)]">{kb.priceRange}</span>
+                      </div>
+                      <h3 className="mb-2 text-xl font-bold text-[var(--primary)]">{kb.name}</h3>
+                      <p className="mb-4 text-xs text-[var(--muted)] leading-relaxed">{display.summary}</p>
+                      <div className="mb-6 space-y-1.5">
+                        <p className="text-xs text-[var(--muted)] font-medium">주요 장점:</p>
+                        <ul className="list-inside list-disc">
+                          {display.strengths.slice(0, 2).map((s, i) => (
+                            <li key={i} className="text-[10px] text-[var(--muted)]">{s}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="mt-auto flex flex-wrap gap-1.5">
+                        {kb.features.map(f => (
+                          <span key={f} className="rounded-md bg-[var(--accent)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--accent)]">
+                            {f}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <h3 className="mb-2 text-xl font-bold text-[var(--primary)]">{kb.name}</h3>
-                    <div className="mb-6 space-y-1.5">
-                      <p className="text-xs text-[var(--muted)]">배열: {kb.layout}</p>
-                      <p className="text-xs text-[var(--muted)]">소재: {kb.material.charAt(0).toUpperCase() + kb.material.slice(1)}</p>
-                      <p className="text-xs text-[var(--muted)]">핫스왑: {kb.isHotSwap ? "지원" : "미지원"}</p>
-                    </div>
-                    <div className="mt-auto flex flex-wrap gap-1.5">
-                      {kb.features.map(f => (
-                        <span key={f} className="rounded-md bg-[var(--accent)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--accent)]">
-                          {f}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="rounded-2xl border-2 border-dashed border-[var(--border)] p-20 text-center">

@@ -1,5 +1,14 @@
 import { Monitor, MousePointer2, Zap, Mouse, Keyboard } from "lucide-react";
 import { TestCard } from "@/components/cards/Cards";
+import { TEST_TOOLS } from "@/content/kr/tools";
+
+const ICON_MAP = {
+  Monitor,
+  MousePointer2,
+  Zap,
+  Mouse,
+  Keyboard,
+};
 
 export default function TestsPage() {
   return (
@@ -17,58 +26,18 @@ export default function TestsPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <TestCard 
-          title="불량화소 테스트" 
-          description="색상별 전체화면을 통해 화면 속 작은 점(불량화소)이 있는지 확인합니다."
-          href="/kr/tests/dead-pixel"
-          icon={Monitor}
-          duration="1~3분"
-          purpose="화면 결함 유무 확인"
-          caution="먼지를 닦으면 더 정확할 수 있습니다"
-        />
-        <TestCard 
-          title="빛샘 / IPS Glow" 
-          description="어두운 곳에서 화면 가장자리가 하얗게 들뜨는 현상을 점검합니다."
-          href="/kr/tests/backlight-bleed"
-          icon={Monitor}
-          duration="2분"
-          purpose="빛샘 및 패널 균일도 확인"
-          caution="주변이 어두울 때 정확할 수 있습니다"
-        />
-        <TestCard 
-          title="더블클릭 테스트" 
-          description="한 번만 눌렀는데 두 번 클릭되는 마우스 고장 증상을 진단합니다."
-          href="/kr/tests/double-click"
-          icon={MousePointer2}
-          duration="1분 내외"
-          purpose="스위치 고장 가능성 확인"
-          caution="브라우저 설정에 따라 다를 수 있습니다"
-        />
-        <TestCard 
-          title="CPS 테스트" 
-          description="1초당 몇 번의 클릭이 가능한지 자신의 속도를 측정해보세요."
-          href="/kr/tests/cps"
-          icon={Mouse}
-          duration="5~30초"
-          purpose="클릭 속도 및 반응 확인"
-        />
-        <TestCard 
-          title="폴링레이트 측정" 
-          description="마우스가 PC와 데이터를 주고받는 실제 속도를 확인합니다."
-          href="/kr/tests/polling-rate"
-          icon={Zap}
-          duration="10초"
-          purpose="전송 속도(Hz) 정상 여부 확인"
-          caution="환경에 따라 오차가 있을 수 있습니다"
-        />
-        <TestCard 
-          title="키보드 동시입력" 
-          description="여러 키를 동시에 눌렀을 때 모두 잘 인식되는지 테스트합니다."
-          href="/kr/tests/keyboard-rollover"
-          icon={Keyboard}
-          duration="1분"
-          purpose="동시 입력(무한입력) 확인"
-        />
+        {TEST_TOOLS.map((tool) => (
+          <TestCard 
+            key={tool.id}
+            title={tool.title}
+            description={tool.description}
+            href={tool.href}
+            icon={ICON_MAP[tool.iconName as keyof typeof ICON_MAP] || Monitor}
+            duration={tool.duration}
+            purpose={tool.purpose}
+            caution={tool.caution}
+          />
+        ))}
       </div>
 
       <div className="mt-20 rounded-3xl bg-[var(--secondary)]/30 p-10 text-center border border-[var(--border)]">
