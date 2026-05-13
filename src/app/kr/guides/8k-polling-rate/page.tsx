@@ -28,7 +28,7 @@ export default function PollingRateGuide() {
       ]}
       relatedTest={{
         name: "폴링레이트 측정",
-        href: "/ko/tests/polling-rate"
+        href: "/kr/tests/polling-rate"
       }}
     />
   );

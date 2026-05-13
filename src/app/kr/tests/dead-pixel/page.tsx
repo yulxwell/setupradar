@@ -32,7 +32,7 @@ export default function DeadPixelPage() {
             </li>
             <li className="flex items-start gap-2">
               <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-[10px] font-bold text-blue-500 border border-blue-500/20">2</span>
-              <span>'테스트 시작'을 눌러 전체화면 모드로 진입합니다.</span>
+              <span>&apos;테스트 시작&apos;을 눌러 전체화면 모드로 진입합니다.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-[10px] font-bold text-blue-500 border border-blue-500/20">3</span>

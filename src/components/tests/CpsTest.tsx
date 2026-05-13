@@ -11,14 +11,15 @@ export function CpsTest() {
   const [selectedTime, setSelectedTime] = useState(5);
   const [clicks, setClicks] = useState(0);
   const [status, setStatus] = useState<"idle" | "running" | "finished">("idle");
-  const [bestCps, setBestCps] = useState(0);
+  const [bestCps, setBestCps] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("setupradar_best_cps");
+      return saved ? parseFloat(saved) : 0;
+    }
+    return 0;
+  });
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("setupradar_best_cps");
-    if (saved) setBestCps(parseFloat(saved));
-  }, []);
 
   const finishTest = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);

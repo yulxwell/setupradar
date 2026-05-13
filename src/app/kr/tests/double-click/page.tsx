@@ -46,7 +46,7 @@ export default function DoubleClickPage() {
           <div className="rounded-2xl border border-white/5 bg-slate-900/40 p-6 md:p-8">
             <h2 className="mb-2 text-xl font-bold text-white">참고사항</h2>
             <p className="text-sm text-slate-500 leading-relaxed">
-              마우스 설정에서 '클릭 속도'가 너무 빠르게 되어 있거나, 일부 고성능 게이밍 마우스의 '디바운스 타임' 설정에 따라 결과가 다를 수 있습니다.
+              마우스 설정에서 &apos;클릭 속도&apos;가 너무 빠르게 되어 있거나, 일부 고성능 게이밍 마우스의 &apos;디바운스 타임&apos; 설정에 따라 결과가 다를 수 있습니다.
             </p>
           </div>
           <DisclaimerBox className="bg-slate-900/50 border-white/5" />

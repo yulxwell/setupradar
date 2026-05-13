@@ -82,7 +82,7 @@ export function DeadPixelTest() {
           </div>
           <h2 className="mb-2 text-2xl font-bold text-white">불량화소 테스트</h2>
           <p className="mb-8 max-w-sm text-slate-300 text-sm leading-relaxed">
-            화면의 먼지를 닦아낸 뒤 '테스트 시작'을 눌러주세요.<br />
+            화면의 먼지를 닦아낸 뒤 &apos;테스트 시작&apos;을 눌러주세요.<br />
             전체화면에서 색상을 변경하며 픽셀 결함을 확인합니다.
           </p>
           

@@ -7,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-4">
           <div className="col-span-1 md:col-span-1">
-            <Link href="/ko" className="flex items-center gap-2 mb-6">
+            <Link href="/kr" className="flex items-center gap-2 mb-6">
               <div className="flex h-6 w-6 items-center justify-center rounded bg-blue-600 text-white">
                 <Monitor className="h-4 w-4" />
               </div>
@@ -22,18 +22,19 @@ export function Footer() {
           <div>
             <h4 className="mb-6 text-sm font-bold uppercase tracking-widest text-slate-300">테스트</h4>
             <ul className="space-y-4 text-sm text-slate-500">
-              <li><Link href="/ko/tests/dead-pixel" className="hover:text-blue-400 transition-colors">모니터 불량화소</Link></li>
-              <li><Link href="/ko/tests/backlight-bleed" className="hover:text-blue-400 transition-colors">빛샘 / IPS Glow</Link></li>
-              <li><Link href="/ko/tests/double-click" className="hover:text-blue-400 transition-colors">마우스 더블클릭</Link></li>
-              <li><Link href="/ko/tests/polling-rate" className="hover:text-blue-400 transition-colors">마우스 폴링레이트</Link></li>
+              <li><Link href="/kr/tests/dead-pixel" className="hover:text-blue-400 transition-colors">모니터 불량화소</Link></li>
+              <li><Link href="/kr/tests/backlight-bleed" className="hover:text-blue-400 transition-colors">빛샘 / IPS Glow</Link></li>
+              <li><Link href="/kr/tests/double-click" className="hover:text-blue-400 transition-colors">마우스 더블클릭</Link></li>
+              <li><Link href="/kr/tests/polling-rate" className="hover:text-blue-400 transition-colors">마우스 폴링레이트</Link></li>
             </ul>
           </div>
           
           <div>
             <h4 className="mb-6 text-sm font-bold uppercase tracking-widest text-slate-300">리소스</h4>
             <ul className="space-y-4 text-sm text-slate-500">
-              <li><Link href="/ko/guides" className="hover:text-blue-400 transition-colors">구매 가이드</Link></li>
-              <li><Link href="/ko/finder/mouse-fit" className="hover:text-blue-400 transition-colors">마우스 핏(준비 중)</Link></li>
+              <li><Link href="/kr/guides" className="hover:text-blue-400 transition-colors">구매 가이드</Link></li>
+              <li><Link href="/kr/finder/mouse-fit" className="hover:text-blue-400 transition-colors">마우스 핏 찾기</Link></li>
+              <li><Link href="/kr/finder/keyboard-fit" className="hover:text-blue-400 transition-colors">키보드 핏 찾기</Link></li>
             </ul>
           </div>
           

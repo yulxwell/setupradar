@@ -26,7 +26,7 @@ export default function BacklightBleedGuide() {
       ]}
       relatedTest={{
         name: "빛샘 측정하기",
-        href: "/ko/tests/backlight-bleed"
+        href: "/kr/tests/backlight-bleed"
       }}
     />
   );

@@ -28,7 +28,7 @@ export default function DeadPixelGuide() {
       ]}
       relatedTest={{
         name: "불량화소 테스트",
-        href: "/ko/tests/dead-pixel"
+        href: "/kr/tests/dead-pixel"
       }}
     />
   );

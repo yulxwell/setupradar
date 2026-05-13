@@ -15,31 +15,31 @@ export default function GuidesPage() {
         <GuideCard 
           title="게이밍 마우스 vs 일반 마우스"
           description="센서, 무게, 스위치의 차이를 알고 내게 맞는 마우스를 선택하세요."
-          href="/ko/guides/gaming-mouse-vs-normal-mouse"
+          href="/kr/guides/gaming-mouse-vs-normal-mouse"
           icon={Mouse}
         />
         <GuideCard 
           title="8K 폴링레이트, 필요한가요?"
           description="고주사율 모니터 유저라면 필수 체크! 실질적 이득 분석."
-          href="/ko/guides/8k-polling-rate"
+          href="/kr/guides/8k-polling-rate"
           icon={Zap}
         />
         <GuideCard 
           title="불량화소와 무결점 정책"
           description="휘점과 암점의 차이, 브랜드별 교환 기준을 확인하세요."
-          href="/ko/guides/dead-pixel-policy"
+          href="/kr/guides/dead-pixel-policy"
           icon={ShieldCheck}
         />
         <GuideCard 
           title="빛샘 vs IPS Glow"
           description="불필요한 교환/환불 수고를 줄여주는 패널 특성 판별법."
-          href="/ko/guides/backlight-bleed-vs-ips-glow"
+          href="/kr/guides/backlight-bleed-vs-ips-glow"
           icon={Moon}
         />
         <GuideCard 
           title="풀알루미늄 키보드 입문"
           description="묵직한 타건감과 정갈한 소리, 선택 시 주의사항."
-          href="/ko/guides/full-aluminum-keyboard"
+          href="/kr/guides/full-aluminum-keyboard"
           icon={Keyboard}
         />
       </div>

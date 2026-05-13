@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import { Zap, AlertTriangle, RotateCcw, Info, MousePointer2 } from "lucide-react";
+import { useState, useCallback, useRef } from "react";
+import { Zap, AlertTriangle, RotateCcw, MousePointer2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function PollingRateTest() {
@@ -11,7 +11,7 @@ export function PollingRateTest() {
   const lastTime = useRef<number>(0);
   const sampleCount = useRef<number>(0);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+  const handleMouseMove = useCallback(() => {
     const now = performance.now();
     if (lastTime.current) {
       const interval = now - lastTime.current;

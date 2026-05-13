@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Monitor, MousePointer2, Keyboard, Search, Menu, X } from "lucide-react";
+import { Monitor, Keyboard, Search, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const navigation = [
-  { name: "테스트 도구", href: "/ko/tests", icon: Monitor },
-  { name: "구매 가이드", href: "/ko/guides", icon: Keyboard },
-  { name: "장비 찾기", href: "/ko/finder/mouse-fit", icon: Search },
+  { name: "테스트 도구", href: "/kr/tests", icon: Monitor },
+  { name: "구매 가이드", href: "/kr/guides", icon: Keyboard },
+  { name: "마우스 찾기", href: "/kr/finder/mouse-fit", icon: Search },
+  { name: "키보드 찾기", href: "/kr/finder/keyboard-fit", icon: Search },
 ];
 
 export function Header() {
@@ -20,7 +21,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-white/[0.05] bg-slate-950/80 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-8">
-          <Link href="/ko" className="flex items-center gap-2 transition-opacity hover:opacity-90">
+          <Link href="/kr" className="flex items-center gap-2 transition-opacity hover:opacity-90">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
               <Monitor className="h-5 w-5" />
             </div>
@@ -50,7 +51,7 @@ export function Header() {
 
         <div className="flex items-center gap-4">
           <Link 
-            href="/ko/tests" 
+            href="/kr/tests" 
             className="hidden sm:flex h-10 items-center justify-center rounded-lg bg-blue-600 px-5 text-sm font-bold text-white transition-all hover:bg-blue-500"
           >
             시작하기
@@ -84,7 +85,7 @@ export function Header() {
               </Link>
             ))}
             <Link 
-              href="/ko/tests" 
+              href="/kr/tests" 
               onClick={() => setMobileMenuOpen(false)}
               className="mt-4 flex h-14 items-center justify-center rounded-xl bg-blue-600 text-lg font-bold text-white"
             >

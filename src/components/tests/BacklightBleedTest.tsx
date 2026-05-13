@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Moon, Sun, X, Info } from "lucide-react";
+import { Moon, Sun, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function BacklightBleedTest() {

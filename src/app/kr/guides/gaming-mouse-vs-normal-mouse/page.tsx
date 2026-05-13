@@ -29,7 +29,7 @@ export default function GamingMouseGuide() {
       ]}
       relatedTest={{
         name: "더블클릭 테스트",
-        href: "/ko/tests/double-click"
+        href: "/kr/tests/double-click"
       }}
     />
   );

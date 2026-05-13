@@ -1,0 +1,227 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import Link from "next/link";
+import { ChevronLeft, Layout, Zap, RotateCcw, CheckCircle2, Info } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { KEYBOARD_DATABASE } from "@/data/keyboards";
+import { cn } from "@/lib/utils";
+
+type Step = "layout" | "switch" | "result";
+type KeyboardLayout = "full" | "tkl" | "75%" | "65%";
+type SwitchType = "linear" | "tactile" | "clicky";
+
+export default function KeyboardFitPage() {
+  const [step, setStep] = useState<Step>("layout");
+  const [layout, setLayout] = useState<KeyboardLayout | null>(null);
+  const [switchType, setSwitchType] = useState<SwitchType | null>(null);
+
+  const filteredKeyboards = useMemo(() => {
+    if (!layout || !switchType) return [];
+    
+    return KEYBOARD_DATABASE.filter(kb => {
+      const layoutMatch = kb.layout === layout || (layout === "full" && kb.layout === "full");
+      const switchMatch = kb.switchType.includes(switchType);
+      return layoutMatch && switchMatch;
+    });
+  }, [layout, switchType]);
+
+  const reset = () => {
+    setStep("layout");
+    setLayout(null);
+    setSwitchType(null);
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-12 max-w-4xl min-h-[70vh]">
+      <Link 
+        href="/kr" 
+        className="mb-8 inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+      >
+        <ChevronLeft className="h-4 w-4" />
+        메인으로 돌아가기
+      </Link>
+
+      <div className="mb-12">
+        <h1 className="mb-2 text-3xl font-bold text-slate-900 dark:text-white md:text-4xl">Keyboard Finder</h1>
+        <p className="text-slate-500 dark:text-slate-400">사용 목적과 취향에 맞는 기계식 키보드를 찾아드립니다.</p>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="mb-12 flex items-center justify-between gap-4">
+        {[
+          { id: "layout", label: "배열 선택", icon: Layout },
+          { id: "switch", label: "스위치", icon: Zap },
+          { id: "result", label: "추천 결과", icon: CheckCircle2 },
+        ].map((s, idx) => {
+          const isActive = step === s.id;
+          const isDone = (step === "switch" && s.id === "layout") || (step === "result" && (s.id === "layout" || s.id === "switch"));
+          
+          return (
+            <div key={s.id} className="flex flex-1 items-center gap-3">
+              <div className={cn(
+                "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 transition-all",
+                isActive ? "border-blue-600 bg-blue-600 text-white shadow-lg shadow-blue-500/20" : 
+                isDone ? "border-green-500 bg-green-500 text-white" : 
+                "border-slate-200 bg-white text-slate-400 dark:border-slate-800 dark:bg-slate-900"
+              )}>
+                <s.icon className="h-5 w-5" />
+              </div>
+              <div className="hidden md:block">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Step 0{idx + 1}</p>
+                <p className={cn("text-sm font-bold", isActive ? "text-slate-900 dark:text-white" : "text-slate-400")}>{s.label}</p>
+              </div>
+              {idx < 2 && <div className="hidden flex-1 border-t-2 border-slate-100 dark:border-slate-800 md:block" />}
+            </div>
+          );
+        })}
+      </div>
+
+      <AnimatePresence mode="wait">
+        {step === "layout" && (
+          <motion.div 
+            key="layout"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-8"
+          >
+            <div className="text-center md:text-left">
+              <h2 className="mb-2 text-2xl font-bold text-slate-900 dark:text-white">어떤 배열을 선호하시나요?</h2>
+              <p className="text-sm text-slate-500">책상 공간과 숫자패드 필요 여부에 따라 선택하세요.</p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { id: "full", label: "Full Size", desc: "숫자패드 포함 표준" },
+                { id: "tkl", label: "TKL (80%)", desc: "숫자패드 제거" },
+                { id: "75%", label: "75%", desc: "컴팩트 + 방향키" },
+                { id: "65%", label: "65%", desc: "극강의 공간 효율" },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setLayout(item.id as KeyboardLayout);
+                    setStep("switch");
+                  }}
+                  className="group flex flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-600 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/40"
+                >
+                  <Layout className="mb-4 h-8 w-8 text-slate-400 group-hover:text-blue-600" />
+                  <span className="mb-1 text-lg font-bold text-slate-900 dark:text-white">{item.label}</span>
+                  <span className="text-center text-xs text-slate-500">{item.desc}</span>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {step === "switch" && (
+          <motion.div 
+            key="switch"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-8"
+          >
+            <div className="text-center md:text-left">
+              <h2 className="mb-2 text-2xl font-bold text-slate-900 dark:text-white">선호하는 타건감은?</h2>
+              <p className="text-sm text-slate-500">소음 정도와 손끝에 느껴지는 걸림을 선택하세요.</p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              {[
+                { id: "linear", label: "Linear (리니어)", desc: "걸림 없이 매끄러운 입력" },
+                { id: "tactile", label: "Tactile (넌클릭)", desc: "구분감이 느껴지는 타건감" },
+                { id: "clicky", label: "Clicky (클릭)", desc: "찰칵거리는 경쾌한 소리" },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setSwitchType(item.id as SwitchType);
+                    setStep("result");
+                  }}
+                  className="group flex flex-col items-center rounded-2xl border border-slate-200 bg-white p-8 transition-all hover:border-blue-600 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/40"
+                >
+                  <Zap className="mb-4 h-10 w-10 text-slate-400 group-hover:text-blue-600" />
+                  <span className="mb-2 text-lg font-bold text-slate-900 dark:text-white">{item.label}</span>
+                  <span className="text-center text-xs text-slate-500">{item.desc}</span>
+                </button>
+              ))}
+            </div>
+            
+            <button 
+              onClick={() => setStep("layout")}
+              className="flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-slate-600"
+            >
+              <ChevronLeft className="h-4 w-4" /> 이전 단계로
+            </button>
+          </motion.div>
+        )}
+
+        {step === "result" && (
+          <motion.div 
+            key="result"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="space-y-10"
+          >
+            <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+              <div className="text-center md:text-left">
+                <h2 className="mb-2 text-2xl font-bold text-slate-900 dark:text-white">당신을 위한 키보드 추천 결과</h2>
+                <div className="flex flex-wrap gap-2">
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800">
+                    배열: {layout}
+                  </span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800">
+                    스위치: {switchType?.toUpperCase()}
+                  </span>
+                </div>
+              </div>
+              <button 
+                onClick={reset}
+                className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950"
+              >
+                <RotateCcw className="h-4 w-4" /> 다시 하기
+              </button>
+            </div>
+
+            {filteredKeyboards.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                {filteredKeyboards.map((kb) => (
+                  <div 
+                    key={kb.id}
+                    className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60"
+                  >
+                    <div className="mb-4 flex items-center justify-between">
+                      <span className="text-xs font-bold text-blue-600 uppercase tracking-tighter">{kb.brand}</span>
+                      <span className="text-sm font-bold text-slate-900 dark:text-white">{kb.priceRange}</span>
+                    </div>
+                    <h3 className="mb-2 text-xl font-bold text-slate-900 dark:text-white">{kb.name}</h3>
+                    <div className="mb-6 space-y-1.5">
+                      <p className="text-xs text-slate-500">배열: {kb.layout}</p>
+                      <p className="text-xs text-slate-500">소재: {kb.material.charAt(0).toUpperCase() + kb.material.slice(1)}</p>
+                      <p className="text-xs text-slate-500">핫스왑: {kb.isHotSwap ? "지원" : "미지원"}</p>
+                    </div>
+                    <div className="mt-auto flex flex-wrap gap-1.5">
+                      {kb.features.map(f => (
+                        <span key={f} className="rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
+                          {f}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-2xl border-2 border-dashed border-slate-200 p-20 text-center dark:border-slate-800">
+                <Info className="mx-auto mb-4 h-10 w-10 text-slate-300" />
+                <p className="text-lg font-bold text-slate-900 dark:text-white">아직 완벽하게 일치하는 제품이 없네요.</p>
+                <p className="text-sm text-slate-500">데이터베이스를 계속 업데이트 중입니다!</p>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

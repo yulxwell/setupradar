@@ -1,0 +1,152 @@
+export interface Mouse {
+  id: string;
+  name: string;
+  brand: string;
+  dimensions: {
+    length: number; // mm
+    width: number;  // mm
+    height: number; // mm
+  };
+  weight: number;   // g
+  sensor: string;
+  recommendedGrips: ("palm" | "claw" | "fingertip")[];
+  handSizeRange: "small" | "medium" | "large" | "all";
+  priceRange: string;
+  imageUrl?: string;
+  features: string[];
+}
+
+export const MOUSE_DATABASE: Mouse[] = [
+  {
+    id: "g-pro-x-superlight-2",
+    name: "G Pro X Superlight 2",
+    brand: "Logitech",
+    dimensions: { length: 125, width: 63.5, height: 40 },
+    weight: 60,
+    sensor: "HERO 2",
+    recommendedGrips: ["palm", "claw"],
+    handSizeRange: "medium",
+    priceRange: "19만원대",
+    features: ["초경량", "무선 2K 지원", "대칭형"],
+  },
+  {
+    id: "razer-deathadder-v3-pro",
+    name: "DeathAdder V3 Pro",
+    brand: "Razer",
+    dimensions: { length: 128, width: 68, height: 44 },
+    weight: 63,
+    sensor: "Focus Pro 30K",
+    recommendedGrips: ["palm", "claw"],
+    handSizeRange: "large",
+    priceRange: "20만원대",
+    features: ["비대칭형", "인체공학적 디자인", "초경량"],
+  },
+  {
+    id: "viper-v3-pro",
+    name: "Viper V3 Pro",
+    brand: "Razer",
+    dimensions: { length: 127, width: 64, height: 40 },
+    weight: 54,
+    sensor: "Focus Pro 35K",
+    recommendedGrips: ["claw", "fingertip"],
+    handSizeRange: "medium",
+    priceRange: "23만원대",
+    features: ["8K 무선 지원", "낮은 클릭 레이턴시", "대칭형"],
+  },
+  {
+    id: "pulsar-x2v2-mini",
+    name: "X2V2 Mini",
+    brand: "Pulsar",
+    dimensions: { length: 116, width: 61, height: 37 },
+    weight: 51,
+    sensor: "PAW3395",
+    recommendedGrips: ["claw", "fingertip"],
+    handSizeRange: "small",
+    priceRange: "10만원대",
+    features: ["초소형", "초경량", "가성비"],
+  },
+  {
+    id: "zowie-ec2-cw",
+    name: "EC2-CW",
+    brand: "Zowie",
+    dimensions: { length: 123, width: 65, height: 42 },
+    weight: 77,
+    sensor: "PAW3370",
+    recommendedGrips: ["palm"],
+    handSizeRange: "medium",
+    priceRange: "21만원대",
+    features: ["독보적인 그립감", "안정적인 무선", "비대칭형"],
+  },
+  {
+    id: "lamzu-maya",
+    name: "Maya",
+    brand: "Lamzu",
+    dimensions: { length: 119, width: 62, height: 38 },
+    weight: 45,
+    sensor: "PAW3395",
+    recommendedGrips: ["claw", "fingertip"],
+    handSizeRange: "small",
+    priceRange: "12만원대",
+    features: ["초경량 45g", "컴팩트한 크기", "대칭형"],
+  },
+  {
+    id: "vaxt-np-01s-wireless",
+    name: "NP-01S Wireless",
+    brand: "VAXEE",
+    dimensions: { length: 120, width: 63, height: 37 },
+    weight: 68,
+    sensor: "PAW3395",
+    recommendedGrips: ["claw"],
+    handSizeRange: "medium",
+    priceRange: "17만원대",
+    features: ["세밀한 빌드 퀄리티", "안정적인 클릭감", "하이브리드형"],
+  },
+  {
+    id: "logitech-g502-x-lightspeed",
+    name: "G502 X LIGHTSPEED",
+    brand: "Logitech",
+    dimensions: { length: 131, width: 79, height: 41 },
+    weight: 102,
+    sensor: "HERO 25K",
+    recommendedGrips: ["palm"],
+    handSizeRange: "large",
+    priceRange: "16만원대",
+    features: ["다버튼 매크로", "무한 휠", "비대칭형"],
+  },
+  {
+    id: "razer-viper-mini-se",
+    name: "Viper Mini Signature Edition",
+    brand: "Razer",
+    dimensions: { length: 119, width: 62, height: 39 },
+    weight: 49,
+    sensor: "Focus Pro 30K",
+    recommendedGrips: ["fingertip", "claw"],
+    handSizeRange: "small",
+    priceRange: "40만원대",
+    features: ["마그네슘 합금", "8K 지원", "한정판"],
+  },
+  {
+    id: "finalmouse-ultralightx-lion",
+    name: "UltralightX (Lion)",
+    brand: "Finalmouse",
+    dimensions: { length: 121, width: 63, height: 37 },
+    weight: 35,
+    sensor: "PAW3395",
+    recommendedGrips: ["claw", "fingertip"],
+    handSizeRange: "medium",
+    priceRange: "30만원대",
+    features: ["초경량 35g", "탄소 섬유", "대칭형"],
+  },
+  {
+    id: "zowie-fk2-c",
+    name: "FK2-C",
+    brand: "Zowie",
+    dimensions: { length: 125, width: 65, height: 36 },
+    weight: 70,
+    sensor: "PMW3360",
+    recommendedGrips: ["claw", "fingertip"],
+    handSizeRange: "medium",
+    priceRange: "9만원대",
+    features: ["낮은 등 높이", "전통의 대칭형", "유선"],
+  },
+];

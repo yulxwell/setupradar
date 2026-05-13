@@ -1,4 +1,10 @@
-# SetupRadar (v0.1.1 - UI/UX Refined)
+# SetupRadar (v0.2.0 - Gear Finders Update)
+
+## 📍 주요 경로 (Routes)
+- 한국어 기본 경로: `/kr`
+- 도구 목록: `/kr/tests`
+- 구매 가이드: `/kr/guides`
+- 장비 찾기: `/kr/finder/mouse-fit`
 
 PC 하드웨어(마우스, 키보드, 모니터) 진단 및 구매 가이드를 제공하는 정적 웹 플랫폼입니다.
 
