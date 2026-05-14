@@ -20,12 +20,12 @@ import { MOUSE_DATABASE } from "@/content/kr/products/mice";
 import { getContentDisplay } from "@/content/utils";
 import { cn } from "@/lib/utils";
 
-type Step = "size" | "problem" | "weight" | "connection" | "purpose" | "grip" | "result";
+type Step = "size" | "problem" | "weight" | "connection" | "purpose" | "shape" | "result";
 type HandSize = "small" | "medium" | "large";
 type WeightPref = "ultralight" | "normal" | "any";
 type ConnectionPref = "wireless" | "wired" | "any";
 type Purpose = "fps" | "moba" | "office" | "all";
-type GripStyle = "palm" | "claw" | "fingertip" | "unknown";
+type ShapePreference = "symmetrical" | "ergonomic" | "unknown";
 type Problem = "wrist" | "size" | "weight" | "doubleclick" | "none";
 
 export default function MouseFitPage() {
@@ -35,7 +35,7 @@ export default function MouseFitPage() {
   const [weightPref, setWeightPref] = useState<WeightPref>("any");
   const [connectionPref, setConnectionPref] = useState<ConnectionPref>("any");
   const [purpose, setPurpose] = useState<Purpose>("all");
-  const [gripStyle, setGripStyle] = useState<GripStyle>("unknown");
+  const [shapePreference, setShapePreference] = useState<ShapePreference>("unknown");
 
   const filteredMice = useMemo(() => {
     if (step !== "result") return [];
@@ -68,12 +68,12 @@ export default function MouseFitPage() {
         // Not a hard filter, but could be a score. For now, let's keep it simple.
       }
 
-      // 5. Grip match (Reference only - only filter if specifically chosen and not 'unknown')
-      const gripMatch = gripStyle === "unknown" || mouse.recommendedGrips.includes(gripStyle);
+      // 5. Shape match
+      const shapeMatch = shapePreference === "unknown" || mouse.shapeType === shapePreference;
 
-      return sizeMatch && weightMatch && connMatch && gripMatch && purposeMatch;
+      return sizeMatch && weightMatch && connMatch && shapeMatch && purposeMatch;
     });
-  }, [step, handSize, weightPref, connectionPref, gripStyle, problem, purpose]);
+  }, [step, handSize, weightPref, connectionPref, shapePreference, problem, purpose]);
 
   const reset = () => {
     setStep("size");
@@ -82,7 +82,7 @@ export default function MouseFitPage() {
     setWeightPref("any");
     setConnectionPref("any");
     setPurpose("all");
-    setGripStyle("unknown");
+    setShapePreference("unknown");
   };
 
   const steps: { id: Step; label: string; icon: React.ElementType }[] = [
@@ -91,7 +91,7 @@ export default function MouseFitPage() {
     { id: "weight", label: "무게", icon: Weight },
     { id: "connection", label: "연결", icon: Wifi },
     { id: "purpose", label: "용도", icon: Target },
-    { id: "grip", label: "파지법", icon: Hand },
+    { id: "shape", label: "선호 형태", icon: Hand },
     { id: "result", label: "결과", icon: CheckCircle2 },
   ];
 
@@ -306,7 +306,7 @@ export default function MouseFitPage() {
                   key={item.id}
                   onClick={() => {
                     setPurpose(item.id as Purpose);
-                    setStep("grip");
+                    setStep("shape");
                   }}
                   className="group flex flex-col items-center rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6 transition-all hover:border-[var(--accent)] hover:bg-[var(--secondary)]/50"
                 >
@@ -319,9 +319,9 @@ export default function MouseFitPage() {
           </motion.div>
         )}
 
-        {step === "grip" && (
+        {step === "shape" && (
           <motion.div 
-            key="grip"
+            key="shape"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
@@ -329,23 +329,22 @@ export default function MouseFitPage() {
           >
             <div className="text-center md:text-left">
               <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-[var(--accent)]/10 px-3 py-1 text-[10px] font-bold text-[var(--accent)]">
-                <HelpCircle className="h-3 w-3" /> 참고 선택 사항
+                <HelpCircle className="h-3 w-3" /> 그립감의 핵심
               </div>
-              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">평소 마우스 파지법(그립)은?</h2>
-              <p className="text-sm text-[var(--muted)]">잘 모르겠다면 &apos;잘 모르겠음&apos;을 선택하셔도 결과에는 큰 영향이 없습니다.</p>
+              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">선호하는 마우스 형태가 있나요?</h2>
+              <p className="text-sm text-[var(--muted)]">형태에 따라 손에 감기는 느낌이 완전히 다릅니다.</p>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               {[
-                { id: "palm", label: "팜 그립 (Palm)", desc: "손바닥 전체 밀착" },
-                { id: "claw", label: "클로 그립 (Claw)", desc: "손가락 끝을 세움" },
-                { id: "fingertip", label: "핑거 그립", desc: "손가락 끝으로만 조작" },
+                { id: "symmetrical", label: "대칭형", desc: "좌우 모양이 같음 / 범용적" },
+                { id: "ergonomic", label: "오른손용 비대칭형", desc: "손 모양에 맞춘 곡선 / 편안함" },
                 { id: "unknown", label: "잘 모르겠음", desc: "상관 없이 추천받기" },
               ].map((item) => (
                 <button
                   key={item.id}
                   onClick={() => {
-                    setGripStyle(item.id as GripStyle);
+                    setShapePreference(item.id as ShapePreference);
                     setStep("result");
                   }}
                   className="group flex flex-col items-center rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6 transition-all hover:border-[var(--accent)] hover:bg-[var(--secondary)]/50"
@@ -381,6 +380,11 @@ export default function MouseFitPage() {
                   {connectionPref !== "any" && (
                     <span className="rounded-full bg-[var(--secondary)] px-3 py-1 text-[10px] font-bold text-[var(--muted)] border border-[var(--border)] uppercase">
                       {connectionPref === "wireless" ? "무선" : "유선"}
+                    </span>
+                  )}
+                  {shapePreference !== "unknown" && (
+                    <span className="rounded-full bg-[var(--secondary)] px-3 py-1 text-[10px] font-bold text-[var(--muted)] border border-[var(--border)] uppercase">
+                      {shapePreference === "symmetrical" ? "대칭형" : "비대칭형"}
                     </span>
                   )}
                 </div>
@@ -448,9 +452,9 @@ export default function MouseFitPage() {
                 <div className="space-y-2">
                   <p className="text-xs font-bold text-[var(--accent)]">참고해주세요!</p>
                   <p className="text-[11px] leading-relaxed text-[var(--accent)] opacity-80">
-                    손 크기와 현재 불편함 기준으로 보면 이 제품들이 잘 맞을 수 있습니다. 
-                    파지법(Grip)은 습관에 따라 적응할 수 있는 요소이므로, 절대적인 기준보다는 참고용으로만 활용하시는 편이 좋습니다. 
-                    가장 중요한 것은 실제 손에 쥐었을 때의 첫인상과 편안함입니다.
+                    손 크기와 형태(대칭/비대칭) 선호도를 기준으로 가장 적합한 제품들을 선정했습니다. 
+                    특정 그립법(팜, 클로 등)은 마우스 형태에 따라 자연스럽게 적응되는 경우가 많으므로, 
+                    본인의 마우스 형태 취향을 먼저 파악하는 것이 구매 실패를 줄이는 가장 확실한 방법입니다.
                   </p>
                 </div>
               </div>

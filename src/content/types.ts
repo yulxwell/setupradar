@@ -43,6 +43,7 @@ export interface BaseContent {
 
 export interface MouseContent extends BaseContent {
   category: "mouse";
+  shapeType: "symmetrical" | "ergonomic";
   dimensions: {
     length: number;
     width: number;

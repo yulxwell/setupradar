@@ -1,4 +1,4 @@
-# SetupRadar (v0.2.5 - Content Infrastructure & Detail Hotfix)
+# SetupRadar (v0.2.6 - Finder Logic Refinement)
 
 ## 📍 주요 경로 (Routes)
 - 한국어 기본 경로: `/kr`
@@ -20,7 +20,12 @@ SetupRadar는 운영 효율성을 위해 하이브리드 콘텐츠 구조를 사
 - **편집 가이드**: 상세한 데이터 수정 방법은 [docs/content-editing-guide.md](file:///Users/jilee/antigravity/src/project7/docs/content-editing-guide.md)를 참고하세요.
 
 ## ✅ 주요 업데이트 내역
-### v0.2.5 - Detail Hotfix & UX Polish (Current)
+### v0.2.6 - Finder Logic Refinement (Current)
+- **Mouse Finder 파지법 제거**: 초보자가 이해하기 어려운 팜/클로/핑거 그립 파지법 질문을 제거하고, 대신 "마우스 형태 선호(대칭/비대칭)" 질문을 도입하여 직관성을 높였습니다.
+- **추천 로직 고도화**: 그립법 기준 필터링에서 `shapeType`(Symmetrical/Ergonomic) 기반 가산점 방식으로 로직을 전환하여 더 정확한 제품 추천을 제공합니다.
+- **Keyboard Finder 레이아웃 시각화 강화**: 75%, 65%, 60% 등 구분이 어려운 미니 배열들을 CSS Grid 기반의 정교한 다이어그램으로 재구성하여 시각적 차이를 극대화했습니다.
+
+### v0.2.5 - Detail Hotfix & UX Polish
 - **Mouse Finder 개편**: 기존 3단계에서 6단계 정밀 마법사로 리뉴얼. 손 크기, 불편함(손목 통증), 무게, 연결 방식 등을 우선순위에 배치하여 초보자 대응 강화.
 - **Keyboard Finder 시각화**: 배열 선택 단계에서 실제 키보드 크기를 직관적으로 알 수 있는 레이아웃 배지/아이콘 시스템 도입. 60% 배열 추가.
 - **콘텐츠 아키텍처 안정화**: `BaseContent` 인터페이스 강화를 통해 제품/스위치 데이터의 타입 안전성 확보 및 브랜드 미지정 제품 예외 처리.

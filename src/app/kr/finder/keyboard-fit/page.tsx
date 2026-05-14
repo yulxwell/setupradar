@@ -14,37 +14,58 @@ type SwitchType = "linear" | "tactile" | "clicky";
 
 function KeyboardLayoutVisual({ type }: { type: KeyboardLayout }) {
   return (
-    <div className="mb-4 flex h-20 w-full items-end justify-center gap-1 px-4">
-      {/* Main Block */}
-      <div className={cn(
-        "rounded-md border-2 border-[var(--border)] bg-[var(--background)] shadow-sm transition-all",
-        type === "full" ? "h-12 w-24" : 
-        type === "tkl" ? "h-12 w-20" : 
-        type === "75%" ? "h-12 w-16" : 
-        type === "65%" ? "h-10 w-14" : "h-10 w-12"
-      )}>
-        <div className="grid h-full w-full grid-cols-4 grid-rows-3 gap-0.5 p-1 opacity-20">
-          {[...Array(12)].map((_, i) => <div key={i} className="rounded-sm bg-[var(--muted)]" />)}
+    <div className="mb-6 flex h-24 w-full items-center justify-center p-2">
+      <div className="relative flex items-end gap-1.5 rounded-xl bg-[var(--secondary)]/20 p-3 shadow-inner ring-1 ring-[var(--border)]">
+        {/* Main Alpha Block (Always present) */}
+        <div className={cn(
+          "rounded-md border-2 border-[var(--primary)]/40 bg-[var(--background)] p-1.5 transition-all shadow-sm",
+          type === "full" || type === "tkl" ? "h-14 w-28" : 
+          type === "75%" ? "h-14 w-24" :
+          type === "65%" ? "h-12 w-22" : "h-12 w-20"
+        )}>
+          <div className="grid h-full w-full grid-cols-6 grid-rows-3 gap-1 opacity-20">
+            {[...Array(18)].map((_, i) => <div key={i} className="rounded-[1px] bg-[var(--primary)]" />)}
+          </div>
+        </div>
+        
+        {/* Nav Block for TKL and Full */}
+        {(type === "tkl" || type === "full") && (
+          <div className="flex flex-col gap-1.5">
+             <div className="h-4 w-8 rounded-md border border-[var(--border)] bg-[var(--background)]/50 opacity-40" />
+             <div className="h-8 w-8 rounded-md border-2 border-[var(--primary)]/30 bg-[var(--background)] p-1 shadow-sm">
+                <div className="grid h-full w-full grid-cols-2 grid-rows-2 gap-1 opacity-20">
+                  {[...Array(4)].map((_, i) => <div key={i} className="rounded-[1px] bg-[var(--primary)]" />)}
+                </div>
+             </div>
+          </div>
+        )}
+
+        {/* Numpad Block for Full */}
+        {type === "full" && (
+          <div className="h-14 w-12 rounded-md border-2 border-[var(--accent)] bg-[var(--accent)]/10 p-1.5 shadow-[0_0_15px_rgba(var(--accent-rgb),0.1)]">
+            <div className="grid h-full w-full grid-cols-2 grid-rows-3 gap-1">
+              {[...Array(6)].map((_, i) => <div key={i} className="rounded-[1px] bg-[var(--accent)]/40" />)}
+            </div>
+          </div>
+        )}
+
+        {/* Side Column for 65% and 75% */}
+        {(type === "65%" || type === "75%") && (
+          <div className={cn(
+            "rounded-md border-2 border-[var(--accent)]/30 bg-[var(--accent)]/5 p-1 shadow-sm",
+            type === "75%" ? "h-14 w-4" : "h-12 w-4"
+          )}>
+            <div className="flex h-full flex-col gap-1 opacity-40">
+              {[...Array(type === "75%" ? 4 : 3)].map((_, i) => <div key={i} className="flex-1 rounded-[1px] bg-[var(--accent)]" />)}
+            </div>
+          </div>
+        )}
+
+        {/* Layout Tag Badge */}
+        <div className="absolute -top-3 -right-3 rounded-md bg-[var(--primary)] px-2 py-0.5 text-[8px] font-black text-[var(--background)] shadow-lg uppercase tracking-widest">
+          {type}
         </div>
       </div>
-      
-      {/* Numpad Block for Full */}
-      {type === "full" && (
-        <div className="h-12 w-8 rounded-md border-2 border-[var(--accent)] bg-[var(--accent)]/10 shadow-sm transition-all">
-          <div className="grid h-full w-full grid-cols-2 grid-rows-3 gap-0.5 p-1">
-            {[...Array(6)].map((_, i) => <div key={i} className="rounded-sm bg-[var(--accent)]/40" />)}
-          </div>
-        </div>
-      )}
-
-      {/* Nav Block for TKL */}
-      {type === "tkl" && (
-        <div className="h-12 w-6 rounded-md border-2 border-[var(--border)] bg-[var(--background)] shadow-sm opacity-50">
-          <div className="grid h-full w-full grid-cols-2 grid-rows-3 gap-0.5 p-1">
-            {[...Array(4)].map((_, i) => <div key={i} className="rounded-sm bg-[var(--muted)]" />)}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
