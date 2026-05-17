@@ -1,468 +1,242 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { 
-  ChevronLeft, 
-  Ruler, 
-  Hand, 
-  RotateCcw, 
-  CheckCircle2, 
-  Info, 
-  AlertCircle, 
-  Weight, 
-  Wifi, 
-  Target, 
-  HelpCircle 
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, Info, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { MOUSE_DATABASE } from "@/content/kr/products/mice";
+import {
+  FinderOptionGroup,
+  MOUSE_FINDER_DEFAULTS,
+  MOUSE_FINDER_OPTIONS,
+  MouseFinderValues,
+} from "@/content/kr/finder/mouseFinderOptions";
 import { getContentDisplay } from "@/content/utils";
 import { cn } from "@/lib/utils";
 
-type Step = "size" | "problem" | "weight" | "connection" | "purpose" | "shape" | "result";
-type HandSize = "small" | "medium" | "large";
-type WeightPref = "ultralight" | "normal" | "any";
-type ConnectionPref = "wireless" | "wired" | "any";
-type Purpose = "fps" | "moba" | "office" | "all";
-type ShapePreference = "symmetrical" | "ergonomic" | "unknown";
-type Problem = "wrist" | "size" | "weight" | "doubleclick" | "none";
+type MouseScore = {
+  mouse: (typeof MOUSE_DATABASE)[number];
+  score: number;
+  reasons: string[];
+  cautions: string[];
+};
 
-export default function MouseFitPage() {
-  const [step, setStep] = useState<Step>("size");
-  const [handSize, setHandSize] = useState<HandSize | null>(null);
-  const [problem, setProblem] = useState<Problem>("none");
-  const [weightPref, setWeightPref] = useState<WeightPref>("any");
-  const [connectionPref, setConnectionPref] = useState<ConnectionPref>("any");
-  const [purpose, setPurpose] = useState<Purpose>("all");
-  const [shapePreference, setShapePreference] = useState<ShapePreference>("unknown");
+function isWireless(features: string[]) {
+  return features.some((feature) => /무선|wireless/i.test(feature));
+}
 
-  const filteredMice = useMemo(() => {
-    if (step !== "result") return [];
-    
-    return MOUSE_DATABASE.filter(mouse => {
-      // 1. Size match (Essential)
-      const sizeMatch = !handSize || mouse.handSizeRange === handSize || mouse.handSizeRange === "all";
-      
-      // 2. Weight match
-      let weightMatch = true;
-      if (weightPref === "ultralight") weightMatch = mouse.weight < 65;
-      
-      // 3. Connection match
-      let connMatch = true;
-      const isWireless = mouse.features.some(f => f.includes("무선"));
-      if (connectionPref === "wireless") connMatch = isWireless;
-      if (connectionPref === "wired") connMatch = !isWireless;
+function scoreMouse(mouse: (typeof MOUSE_DATABASE)[number], values: MouseFinderValues): MouseScore {
+  const reasons: string[] = [];
+  const cautions: string[] = [];
+  let score = 0;
+  const wireless = isWireless([...mouse.features, ...(mouse.specTags ?? [])]);
 
-      // 4. Purpose match
-      let purposeMatch = true;
-      if (purpose === "fps" || purpose === "moba") {
-        // Prioritize lightweight or high polling rate
-        const isGamingMice = mouse.weight < 80 || mouse.features.some(f => f.includes("8K") || f.includes("4K"));
-        purposeMatch = isGamingMice;
-      }
+  if (values.handSize !== "unknown") {
+    if (mouse.handSizeRange === values.handSize || mouse.handSizeRange === "all") {
+      score += 3;
+      reasons.push("선택한 손 크기와 맞을 수 있습니다.");
+    } else {
+      cautions.push("손 크기 체감은 개인차가 있어 실측 확인이 필요합니다.");
+    }
+  }
 
-      // 5. Problem match (Soft match)
-      // If wrist pain, prioritize ergonomic/asymmetric (we'll look for "비대칭" in features)
-      if (problem === "wrist" && !mouse.features.some(f => f.includes("비대칭"))) {
-        // Not a hard filter, but could be a score. For now, let's keep it simple.
-      }
+  if (values.shape !== "any") {
+    if (mouse.shapeType === values.shape) {
+      score += 2;
+      reasons.push(values.shape === "ergonomic" ? "편안한 지지감을 기대할 수 있는 형태입니다." : "대칭형 선호를 반영했습니다.");
+    } else {
+      cautions.push("선호 형태와 다를 수 있어 실사용 후기를 확인해보세요.");
+    }
+  }
 
-      // 5. Shape match
-      const shapeMatch = shapePreference === "unknown" || mouse.shapeType === shapePreference;
+  if (values.weight === "light") {
+    if (mouse.weight <= 65) {
+      score += 2;
+      reasons.push("가벼운 편의 무게 조건에 맞습니다.");
+    } else {
+      cautions.push("가벼운 마우스를 원한다면 무게를 다시 확인해보세요.");
+    }
+  }
+  if (values.weight === "normal" && mouse.weight > 65 && mouse.weight <= 90) {
+    score += 1;
+    reasons.push("너무 가볍지 않은 무게감을 기대할 수 있습니다.");
+  }
 
-      return sizeMatch && weightMatch && connMatch && shapeMatch && purposeMatch;
-    });
-  }, [step, handSize, weightPref, connectionPref, shapePreference, problem, purpose]);
+  if (values.connection === "wireless") {
+    if (wireless) {
+      score += 2;
+      reasons.push("무선 연결 선호를 반영했습니다.");
+    } else {
+      cautions.push("무선 모델을 원한다면 연결 방식을 다시 확인해보세요.");
+    }
+  }
+  if (values.connection === "wired" && !wireless) {
+    score += 2;
+    reasons.push("유선 사용을 선호할 때 후보가 될 수 있습니다.");
+  }
 
-  const reset = () => {
-    setStep("size");
-    setHandSize(null);
-    setProblem("none");
-    setWeightPref("any");
-    setConnectionPref("any");
-    setPurpose("all");
-    setShapePreference("unknown");
-  };
+  if (score === 0) {
+    score = 1;
+    reasons.push("조건을 넓게 보았을 때 참고용 후보입니다.");
+  }
 
-  const steps: { id: Step; label: string; icon: React.ElementType }[] = [
-    { id: "size", label: "손 크기", icon: Ruler },
-    { id: "problem", label: "불편함", icon: AlertCircle },
-    { id: "weight", label: "무게", icon: Weight },
-    { id: "connection", label: "연결", icon: Wifi },
-    { id: "purpose", label: "용도", icon: Target },
-    { id: "shape", label: "선호 형태", icon: Hand },
-    { id: "result", label: "결과", icon: CheckCircle2 },
-  ];
+  return { mouse, score, reasons, cautions };
+}
+
+function CompactOptionGroup({
+  group,
+  value,
+  onChange,
+}: {
+  group: FinderOptionGroup<string>;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const selected = group.options.find((option) => option.value === value);
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl min-h-[70vh]">
-      <Link 
-        href="/kr" 
-        className="mb-8 inline-flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--primary)] transition-colors"
+    <section className="rounded-xl border border-[var(--border)] bg-[var(--secondary)]/20 p-3">
+      <div className="mb-2 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+        <h2 className="text-sm font-bold text-[var(--primary)]">{group.label}</h2>
+        <p className="text-[11px] leading-snug text-[var(--muted)]">{group.helperText}</p>
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {group.options.map((option) => {
+          const isSelected = option.value === value;
+
+          return (
+            <button
+              key={option.value}
+              onClick={() => onChange(option.value)}
+              className={cn(
+                "rounded-full border px-3 py-1.5 text-xs font-bold transition-all",
+                isSelected
+                  ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--background)]"
+                  : "border-[var(--border)] bg-[var(--background)] text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--primary)]",
+              )}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+      {selected && (
+        <p className="mt-2 rounded-lg bg-[var(--background)] px-3 py-2 text-[11px] leading-snug text-[var(--muted)]">
+          {selected.description}
+        </p>
+      )}
+    </section>
+  );
+}
+
+export default function MouseFitPage() {
+  const [values, setValues] = useState<MouseFinderValues>(MOUSE_FINDER_DEFAULTS);
+
+  const scoredMice = useMemo(
+    () => MOUSE_DATABASE
+      .map((mouse) => scoreMouse(mouse, values))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3),
+    [values],
+  );
+
+  const updateValue = <Key extends keyof MouseFinderValues>(key: Key, value: MouseFinderValues[Key]) => {
+    setValues((current) => ({ ...current, [key]: value }));
+  };
+
+  return (
+    <div className="container mx-auto min-h-[70vh] max-w-6xl px-4 py-8">
+      <Link
+        href="/kr"
+        className="mb-5 inline-flex items-center gap-2 text-xs font-bold text-[var(--muted)] transition-colors hover:text-[var(--primary)]"
       >
         <ChevronLeft className="h-4 w-4" />
         메인으로 돌아가기
       </Link>
 
-      <div className="mb-12">
-        <h1 className="mb-2 text-3xl font-bold text-[var(--primary)] md:text-4xl">Mouse Finder</h1>
-        <p className="text-[var(--muted)]">당신의 손과 환경에 꼭 맞는 마우스를 찾아드립니다.</p>
+      <div className="mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-end">
+        <div>
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">
+            <SlidersHorizontal className="h-3 w-3" />
+            Compact Finder
+          </div>
+          <h1 className="text-2xl font-bold text-[var(--primary)] md:text-3xl">Mouse Finder</h1>
+          <p className="mt-1 max-w-2xl text-xs leading-relaxed text-[var(--muted)]">
+            필요한 조건만 빠르게 고르세요. 상관없음을 선택하면 후보를 넓게 봅니다.
+          </p>
+        </div>
+        <button
+          onClick={() => setValues(MOUSE_FINDER_DEFAULTS)}
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--secondary)] px-3 py-2 text-xs font-bold text-[var(--primary)] transition-colors hover:bg-[var(--secondary)]/80"
+        >
+          <RotateCcw className="h-3.5 w-3.5" />
+          초기화
+        </button>
       </div>
 
-      {/* Progress Bar */}
-      <div className="mb-12 hidden md:flex items-center justify-between gap-2">
-        {steps.map((s, idx) => {
-          const isActive = step === s.id;
-          const stepIndex = steps.findIndex(x => x.id === step);
-          const isDone = idx < stepIndex;
-          
-          return (
-            <div key={s.id} className="flex flex-1 items-center gap-2">
-              <div className={cn(
-                "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-[10px] font-bold transition-all",
-                isActive ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--background)] shadow-lg shadow-[var(--accent)]/20" : 
-                isDone ? "border-emerald-600 bg-emerald-600 text-white" : 
-                "border-[var(--border)] bg-[var(--background)] text-[var(--muted)]"
-              )}>
-                {isDone ? <CheckCircle2 className="h-4 w-4" /> : idx + 1}
-              </div>
-              <div className="overflow-hidden">
-                <p className={cn("text-[10px] font-bold whitespace-nowrap", isActive ? "text-[var(--primary)]" : "text-[var(--muted)] opacity-60")}>{s.label}</p>
-              </div>
-              {idx < steps.length - 1 && <div className="flex-1 border-t border-[var(--border)]" />}
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_390px]">
+        <div className="grid content-start gap-3 md:grid-cols-2">
+          <CompactOptionGroup
+            group={MOUSE_FINDER_OPTIONS.handSize}
+            value={values.handSize}
+            onChange={(value) => updateValue("handSize", value as MouseFinderValues["handSize"])}
+          />
+          <CompactOptionGroup
+            group={MOUSE_FINDER_OPTIONS.shape}
+            value={values.shape}
+            onChange={(value) => updateValue("shape", value as MouseFinderValues["shape"])}
+          />
+          <CompactOptionGroup
+            group={MOUSE_FINDER_OPTIONS.weight}
+            value={values.weight}
+            onChange={(value) => updateValue("weight", value as MouseFinderValues["weight"])}
+          />
+          <CompactOptionGroup
+            group={MOUSE_FINDER_OPTIONS.connection}
+            value={values.connection}
+            onChange={(value) => updateValue("connection", value as MouseFinderValues["connection"])}
+          />
+          <div className="rounded-xl border border-[var(--accent)]/10 bg-[var(--accent)]/5 p-3 md:col-span-2">
+            <div className="flex gap-2">
+              <Info className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent)]" />
+              <p className="text-[11px] leading-relaxed text-[var(--accent)] opacity-80">
+                별도의 불편함 질문은 제거했습니다. 손목 피로, 선 걸림, 크기 부담은 각 선택지 설명에 반영되어 있습니다.
+              </p>
             </div>
-          );
-        })}
+          </div>
+        </div>
+
+        <aside className="space-y-3 xl:sticky xl:top-20 xl:self-start">
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--secondary)]/30 p-3">
+            <h2 className="text-base font-bold text-[var(--primary)]">추천 결과</h2>
+            <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">가능한 조건만 점수화한 참고용 결과입니다.</p>
+          </div>
+
+          {scoredMice.map(({ mouse, reasons, cautions }) => {
+            const display = getContentDisplay(mouse);
+            const buyingChecks = display.buyingCheck.length > 0 ? display.buyingCheck : ["손 크기와 쉘 형태가 맞는지 실사용 후기를 확인해보세요."];
+            const communityNote = display.communityNote || "커뮤니티 체감은 손 크기와 기존 사용 마우스에 따라 갈릴 수 있습니다.";
+
+            return (
+              <article key={mouse.id} className="rounded-xl border border-[var(--border)] bg-[var(--secondary)]/30 p-4">
+                <div className="mb-2 flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--accent)]">{mouse.brand || "Unknown"}</p>
+                    <h3 className="text-base font-bold text-[var(--primary)]">{mouse.name}</h3>
+                  </div>
+                  <span className="shrink-0 rounded-full bg-[var(--background)] px-2.5 py-1 text-[11px] font-bold text-[var(--muted)]">{mouse.priceRange}</span>
+                </div>
+                <p className="mb-3 line-clamp-2 text-[11px] leading-relaxed text-[var(--muted)]">{display.summary}</p>
+                <div className="grid gap-2 text-[11px] leading-relaxed">
+                  <p><span className="font-bold text-[var(--primary)]">왜 맞을 수 있는지: </span><span className="text-[var(--muted)]">{reasons[0]}</span></p>
+                  <p><span className="font-bold text-[var(--primary)]">주의할 점: </span><span className="text-[var(--muted)]">{cautions[0] || display.cautions[0] || "가격과 A/S 조건은 확인이 필요합니다."}</span></p>
+                  <p><span className="font-bold text-[var(--primary)]">구매 전 체크: </span><span className="text-[var(--muted)]">{buyingChecks[0]}</span></p>
+                  <p><span className="font-bold text-[var(--primary)]">체감 한줄평: </span><span className="text-[var(--muted)]">{communityNote}</span></p>
+                </div>
+              </article>
+            );
+          })}
+        </aside>
       </div>
-
-      <AnimatePresence mode="wait">
-        {step === "size" && (
-          <motion.div 
-            key="size"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-8"
-          >
-            <div className="text-center md:text-left">
-              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">본인의 손 크기를 선택해주세요</h2>
-              <p className="text-sm text-[var(--muted)]">키보드 F열을 기준으로 측정하거나, 느낌상 크기를 선택하세요.</p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {[
-                { id: "small", label: "작음 (F9 이하)", desc: "손이 작아 일반 마우스가 큽니다" },
-                { id: "medium", label: "보통 (F10~F10.5)", desc: "대부분의 표준 모델이 맞습니다" },
-                { id: "large", label: "큼 (F11 이상)", desc: "손이 커서 마우스가 남습니다" },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setHandSize(item.id as HandSize);
-                    setStep("problem");
-                  }}
-                  className="group flex flex-col items-center rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-8 transition-all hover:border-[var(--accent)] hover:bg-[var(--secondary)]/50"
-                >
-                  <span className="mb-2 text-xl font-bold text-[var(--primary)]">{item.label}</span>
-                  <span className="text-center text-xs text-[var(--muted)]">{item.desc}</span>
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {step === "problem" && (
-          <motion.div 
-            key="problem"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-8"
-          >
-            <div className="text-center md:text-left">
-              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">현재 마우스에서 가장 불편한 점은?</h2>
-              <p className="text-sm text-[var(--muted)]">가장 해결하고 싶은 고민을 선택해주세요.</p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                { id: "wrist", label: "손목이 아파요", desc: "인체공학적 설계가 필요합니다" },
-                { id: "size", label: "크기가 안 맞아요", desc: "더 크거나 작은 모델이 필요합니다" },
-                { id: "weight", label: "너무 무거워요", desc: "가벼운 무게가 최우선입니다" },
-                { id: "doubleclick", label: "버튼 고장이 잦아요", desc: "내구성 좋은 스위치가 필요합니다" },
-                { id: "none", label: "딱히 없어요 / 첫 구매", desc: "가장 인기 있는 표준형을 추천합니다" },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setProblem(item.id as Problem);
-                    setStep("weight");
-                  }}
-                  className="group flex flex-col items-center rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6 transition-all hover:border-[var(--accent)] hover:bg-[var(--secondary)]/50"
-                >
-                  <span className="mb-1 text-lg font-bold text-[var(--primary)]">{item.label}</span>
-                  <span className="text-center text-xs text-[var(--muted)]">{item.desc}</span>
-                </button>
-              ))}
-            </div>
-            <button onClick={() => setStep("size")} className="text-sm font-bold text-[var(--muted)] hover:text-[var(--primary)]">이전으로</button>
-          </motion.div>
-        )}
-
-        {step === "weight" && (
-          <motion.div 
-            key="weight"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-8"
-          >
-            <div className="text-center md:text-left">
-              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">무게는 어느 정도를 원하시나요?</h2>
-              <p className="text-sm text-[var(--muted)]">요즘은 가벼운 마우스가 트렌드지만 개인차가 큽니다.</p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {[
-                { id: "ultralight", label: "매우 가벼움", desc: "65g 미만 / 빠른 조작" },
-                { id: "normal", label: "적당한 무게", desc: "70~90g / 안정적인 느낌" },
-                { id: "any", label: "상관 없음", desc: "무게보다 다른 요소 중시" },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setWeightPref(item.id as WeightPref);
-                    setStep("connection");
-                  }}
-                  className="group flex flex-col items-center rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-8 transition-all hover:border-[var(--accent)] hover:bg-[var(--secondary)]/50"
-                >
-                  <span className="mb-1 text-lg font-bold text-[var(--primary)]">{item.label}</span>
-                  <span className="text-center text-xs text-[var(--muted)]">{item.desc}</span>
-                </button>
-              ))}
-            </div>
-            <button onClick={() => setStep("problem")} className="text-sm font-bold text-[var(--muted)] hover:text-[var(--primary)]">이전으로</button>
-          </motion.div>
-        )}
-
-        {step === "connection" && (
-          <motion.div 
-            key="connection"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-8"
-          >
-            <div className="text-center md:text-left">
-              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">유선 vs 무선, 어떤 것을 선호하세요?</h2>
-              <p className="text-sm text-[var(--muted)]">성능 차이는 거의 없지만 가격과 편의성이 다릅니다.</p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {[
-                { id: "wireless", label: "무선 (Wireless)", desc: "선 걸림 없는 자유로움" },
-                { id: "wired", label: "유선 (Wired)", desc: "충전 필요 없는 안정성" },
-                { id: "any", label: "상관 없음", desc: "가격대비 성능 우선" },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setConnectionPref(item.id as ConnectionPref);
-                    setStep("purpose");
-                  }}
-                  className="group flex flex-col items-center rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-8 transition-all hover:border-[var(--accent)] hover:bg-[var(--secondary)]/50"
-                >
-                  <span className="mb-1 text-lg font-bold text-[var(--primary)]">{item.label}</span>
-                  <span className="text-center text-xs text-[var(--muted)]">{item.desc}</span>
-                </button>
-              ))}
-            </div>
-            <button onClick={() => setStep("weight")} className="text-sm font-bold text-[var(--muted)] hover:text-[var(--primary)]">이전으로</button>
-          </motion.div>
-        )}
-
-        {step === "purpose" && (
-          <motion.div 
-            key="purpose"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-8"
-          >
-            <div className="text-center md:text-left">
-              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">주로 어떤 용도로 사용하시나요?</h2>
-              <p className="text-sm text-[var(--muted)]">용도에 따라 필요한 기능과 성능이 달라집니다.</p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                { id: "fps", label: "FPS 게임", desc: "배그, 오버워치 등 정밀 조작" },
-                { id: "moba", label: "MOBA/RPG", desc: "롤, 디아 등 다버튼 활용" },
-                { id: "office", label: "사무용/작업", desc: "장시간 편안한 사용" },
-                { id: "all", label: "범용 (All)", desc: "다양하게 활용" },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setPurpose(item.id as Purpose);
-                    setStep("shape");
-                  }}
-                  className="group flex flex-col items-center rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6 transition-all hover:border-[var(--accent)] hover:bg-[var(--secondary)]/50"
-                >
-                  <span className="mb-1 text-lg font-bold text-[var(--primary)]">{item.label}</span>
-                  <span className="text-center text-xs text-[var(--muted)]">{item.desc}</span>
-                </button>
-              ))}
-            </div>
-            <button onClick={() => setStep("connection")} className="text-sm font-bold text-[var(--muted)] hover:text-[var(--primary)]">이전으로</button>
-          </motion.div>
-        )}
-
-        {step === "shape" && (
-          <motion.div 
-            key="shape"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-8"
-          >
-            <div className="text-center md:text-left">
-              <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-[var(--accent)]/10 px-3 py-1 text-[10px] font-bold text-[var(--accent)]">
-                <HelpCircle className="h-3 w-3" /> 그립감의 핵심
-              </div>
-              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">선호하는 마우스 형태가 있나요?</h2>
-              <p className="text-sm text-[var(--muted)]">형태에 따라 손에 감기는 느낌이 완전히 다릅니다.</p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {[
-                { id: "symmetrical", label: "대칭형", desc: "좌우 모양이 같음 / 범용적" },
-                { id: "ergonomic", label: "오른손용 비대칭형", desc: "손 모양에 맞춘 곡선 / 편안함" },
-                { id: "unknown", label: "잘 모르겠음", desc: "상관 없이 추천받기" },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setShapePreference(item.id as ShapePreference);
-                    setStep("result");
-                  }}
-                  className="group flex flex-col items-center rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6 transition-all hover:border-[var(--accent)] hover:bg-[var(--secondary)]/50"
-                >
-                  <span className="mb-1 text-lg font-bold text-[var(--primary)]">{item.label}</span>
-                  <span className="text-center text-xs text-[var(--muted)]">{item.desc}</span>
-                </button>
-              ))}
-            </div>
-            <button onClick={() => setStep("purpose")} className="text-sm font-bold text-[var(--muted)] hover:text-[var(--primary)]">이전으로</button>
-          </motion.div>
-        )}
-
-        {step === "result" && (
-          <motion.div 
-            key="result"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="space-y-10"
-          >
-            <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-              <div className="text-center md:text-left">
-                <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">당신을 위한 마우스 추천 결과</h2>
-                <div className="flex flex-wrap justify-center gap-2 md:justify-start">
-                  <span className="rounded-full bg-[var(--secondary)] px-3 py-1 text-[10px] font-bold text-[var(--muted)] border border-[var(--border)] uppercase">
-                    {handSize}
-                  </span>
-                  {weightPref !== "any" && (
-                    <span className="rounded-full bg-[var(--secondary)] px-3 py-1 text-[10px] font-bold text-[var(--muted)] border border-[var(--border)] uppercase">
-                      {weightPref === "ultralight" ? "초경량" : "안정적 무게"}
-                    </span>
-                  )}
-                  {connectionPref !== "any" && (
-                    <span className="rounded-full bg-[var(--secondary)] px-3 py-1 text-[10px] font-bold text-[var(--muted)] border border-[var(--border)] uppercase">
-                      {connectionPref === "wireless" ? "무선" : "유선"}
-                    </span>
-                  )}
-                  {shapePreference !== "unknown" && (
-                    <span className="rounded-full bg-[var(--secondary)] px-3 py-1 text-[10px] font-bold text-[var(--muted)] border border-[var(--border)] uppercase">
-                      {shapePreference === "symmetrical" ? "대칭형" : "비대칭형"}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <button 
-                onClick={reset}
-                className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--secondary)] px-5 py-3 text-sm font-bold text-[var(--primary)] hover:bg-[var(--secondary)]/80"
-              >
-                <RotateCcw className="h-4 w-4" /> 다시 하기
-              </button>
-            </div>
-
-            {filteredMice.length > 0 ? (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                {filteredMice.map((mouse) => {
-                  const display = getContentDisplay(mouse);
-                  return (
-                    <div 
-                      key={mouse.id}
-                      className="flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6"
-                    >
-                      <div className="mb-4 flex items-center justify-between">
-                        <span className="text-xs font-bold text-[var(--accent)] uppercase tracking-tighter">{mouse.brand || "Unknown"}</span>
-                        <span className="text-sm font-bold text-[var(--primary)]">{mouse.priceRange}</span>
-                      </div>
-                      <h3 className="mb-2 text-xl font-bold text-[var(--primary)]">{mouse.name}</h3>
-                      <p className="mb-4 text-xs text-[var(--muted)] leading-relaxed">{display.summary}</p>
-                      
-                      <div className="mb-6 space-y-3">
-                        <div className="space-y-1.5">
-                          <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">주요 특징</p>
-                          <ul className="grid grid-cols-1 gap-1">
-                            {display.strengths.slice(0, 2).map((s, i) => (
-                              <li key={i} className="flex items-center gap-2 text-[10px] text-[var(--muted)]">
-                                <div className="h-1 w-1 rounded-full bg-[var(--accent)]" />
-                                {s}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-
-                      <div className="mt-auto flex flex-wrap gap-1.5">
-                        {mouse.features.map(f => (
-                          <span key={f} className="rounded-md bg-[var(--accent)]/10 px-2 py-0.5 text-[9px] font-bold text-[var(--accent)]">
-                            {f}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="rounded-2xl border-2 border-dashed border-[var(--border)] p-20 text-center">
-                <Info className="mx-auto mb-4 h-10 w-10 text-[var(--muted)] opacity-30" />
-                <p className="text-lg font-bold text-[var(--primary)]">아직 완벽하게 일치하는 제품이 없네요.</p>
-                <p className="text-sm text-[var(--muted)]">조건을 조금 더 완화해서 다시 시도해보세요.</p>
-              </div>
-            )}
-
-            <div className="rounded-2xl bg-[var(--accent)]/5 p-6 border border-[var(--accent)]/10">
-              <div className="flex gap-3">
-                <Info className="h-5 w-5 shrink-0 text-[var(--accent)]" />
-                <div className="space-y-2">
-                  <p className="text-xs font-bold text-[var(--accent)]">참고해주세요!</p>
-                  <p className="text-[11px] leading-relaxed text-[var(--accent)] opacity-80">
-                    손 크기와 형태(대칭/비대칭) 선호도를 기준으로 가장 적합한 제품들을 선정했습니다. 
-                    특정 그립법(팜, 클로 등)은 마우스 형태에 따라 자연스럽게 적응되는 경우가 많으므로, 
-                    본인의 마우스 형태 취향을 먼저 파악하는 것이 구매 실패를 줄이는 가장 확실한 방법입니다.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
-

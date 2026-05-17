@@ -1,4 +1,4 @@
-# SetupRadar (v0.2.6 - Finder Logic Refinement)
+# SetupRadar (v0.3F - Visual Editing Workbench Ready)
 
 ## 📍 주요 경로 (Routes)
 - 한국어 기본 경로: `/kr`
@@ -18,9 +18,35 @@ PC 하드웨어(마우스, 키보드, 모니터) 진단 및 구매 가이드를 
 SetupRadar는 운영 효율성을 위해 하이브리드 콘텐츠 구조를 사용합니다.
 - **AI-Human 하이브리드**: `src/content/` 내 데이터는 AI 생성 초안(`ai`)과 운영자 교정본(`editor`)으로 분리 관리됩니다.
 - **편집 가이드**: 상세한 데이터 수정 방법은 [docs/content-editing-guide.md](file:///Users/jilee/antigravity/src/project7/docs/content-editing-guide.md)를 참고하세요.
+- **WebUI 작업대**: Project99 Control Tower를 통한 시각적 편집을 위해 [docs/content-copy-workbench.kr.json](file:///Users/jilee/antigravity/src/project7/docs/content-copy-workbench.kr.json)을 제공합니다.
 
 ## ✅ 주요 업데이트 내역
-### v0.2.6 - Finder Logic Refinement (Current)
+### v0.3F - Visual Editing Workbench Ready (Current)
+- **시각형 문구 수정 작업대**: Project99 Control Tower의 `/projects/project7/content`에서 SetupRadar 화면처럼 보이는 mock preview를 보며 문구를 클릭하고 수정안을 작성할 수 있습니다.
+- **수동 반영 원칙 유지**: 작업대 수정안은 localStorage와 export 파일로만 관리되며, 실제 사이트 반영은 Codex/Gemini가 `src/content`의 `editor` 필드에 옮긴 뒤 Git push와 Cloudflare Pages 배포로 진행합니다.
+- **실시간 DB 수정 없음**: Supabase/API/n8n 없이 정적 사이트 구조를 유지합니다. 실제 문구 수정은 yulxwell이 별도 루프에서 진행합니다.
+
+### v0.3A - Control Tower Workbench Integration
+- **JSON 작업대 도입**: Markdown 기반 검토를 넘어, Control Tower WebUI에서 읽을 수 있는 구조화된 JSON 작업대(`docs/content-copy-workbench.kr.json`)를 추가했습니다.
+- **Project99 연동 설계**: Control Tower에서 SetupRadar의 문구를 섹션별로 필터링하고 수정안을 작성한 뒤 JSON으로 추출(Export)하는 흐름을 구축했습니다.
+- **수동 반영 원칙 유지**: 실제 코드 수정은 추출된 JSON을 기반으로 Codex/Gemini가 수행하며, 사이트의 완전 정적 아키텍처와 `ai*` 필드 보존 원칙을 유지합니다.
+
+### v0.2.8 - Finder Compact UX Hotfix
+- **Finder compact layout 적용**: Mouse Finder와 Keyboard Finder의 큰 카드형 선택지를 compact chip 중심 UI로 줄였습니다.
+- **첫 화면 정보 밀도 개선**: 데스크톱 기준 주요 선택 항목을 한 화면에서 빠르게 훑어볼 수 있도록 여백과 카드 높이를 줄였습니다.
+- **Mouse Finder 불편함 질문 정리**: "현재 불편한 점"을 별도 질문에서 제거하고, 손목 피로/선 걸림/크기 부담 설명을 각 선택지 helper text에 녹였습니다.
+- **메인 페이지 노출 낮춤**: Finder를 필수 흐름이 아닌 보조 CTA로 낮추고, 테스트 도구보다 크게 보이지 않도록 정리했습니다.
+- **옵션 파일 유지**: Finder 문구와 선택지는 계속 `src/content/kr/finder/*Options.ts`에서 관리합니다.
+
+### v0.2.7 - Finder UX Refactor
+- **Finder 단일 페이지화**: Mouse Finder와 Keyboard Finder를 단계형 마법사에서 한 화면 필터형 UX로 단순화했습니다.
+- **초보자 회피 선택지 강화**: 주요 선택 항목에 "상관없음", "잘 모르겠음"을 추가해 조건을 몰라도 추천 결과를 볼 수 있도록 했습니다.
+- **Mouse Finder 질문 축소**: FPS/MOBA 등 장르 중심 질문을 제거하고 손 크기, 형태, 불편함, 무게, 연결 방식 중심으로 정리했습니다.
+- **Keyboard Finder 시각화 정리**: 품질이 낮은 배열 다이어그램을 제거하고 텍스트 배지와 한 줄 설명 중심으로 대체했습니다.
+- **Finder 옵션 분리**: 운영자가 문구와 선택지를 수정하기 쉽도록 `src/content/kr/finder/` 아래 옵션 config 파일로 분리했습니다.
+- **소프트 매칭 유지**: 누락 조건은 무시하고 가능한 조건만 점수화해 참고용 추천 결과 3개를 표시합니다.
+
+### v0.2.6 - Finder Logic Refinement
 - **Mouse Finder 파지법 제거**: 초보자가 이해하기 어려운 팜/클로/핑거 그립 파지법 질문을 제거하고, 대신 "마우스 형태 선호(대칭/비대칭)" 질문을 도입하여 직관성을 높였습니다.
 - **추천 로직 고도화**: 그립법 기준 필터링에서 `shapeType`(Symmetrical/Ergonomic) 기반 가산점 방식으로 로직을 전환하여 더 정확한 제품 추천을 제공합니다.
 - **Keyboard Finder 레이아웃 시각화 강화**: 75%, 65%, 60% 등 구분이 어려운 미니 배열들을 CSS Grid 기반의 정교한 다이어그램으로 재구성하여 시각적 차이를 극대화했습니다.
@@ -41,6 +67,8 @@ SetupRadar는 운영 효율성을 위해 하이브리드 콘텐츠 구조를 사
 
 ## 📦 배포 가이드 (Cloudflare Pages)
 본 프로젝트는 완전 정적 사이트(Static Site Generation)로 구성되어 있으며, **Cloudflare Pages** 배포를 기준으로 운영됩니다.
+
+콘텐츠와 Finder 옵션은 브라우저에서 실시간으로 수정되는 구조가 아닙니다. 파일을 수정한 뒤 Git에 커밋/푸시하면 Cloudflare Pages 빌드가 실행되고 정적 산출물이 배포됩니다.
 
 ### Cloudflare Pages 설정
 1. Cloudflare 대시보드에서 **Workers & Pages** -> **Create application** -> **Pages** -> **Connect to Git** 선택.

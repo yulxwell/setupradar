@@ -1,314 +1,299 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, Layout, Zap, RotateCcw, CheckCircle2, Info, Keyboard } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, Info, Keyboard, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { KEYBOARD_DATABASE } from "@/content/kr/products/keyboards";
+import {
+  FinderOptionGroup,
+  KEYBOARD_FINDER_DEFAULTS,
+  KEYBOARD_FINDER_OPTIONS,
+  KEYBOARD_LAYOUT_META,
+  KeyboardFinderValues,
+} from "@/content/kr/finder/keyboardFinderOptions";
 import { getContentDisplay } from "@/content/utils";
 import { cn } from "@/lib/utils";
 
-type Step = "layout" | "switch" | "result";
-type KeyboardLayout = "full" | "tkl" | "75%" | "65%" | "60%";
-type SwitchType = "linear" | "tactile" | "clicky";
+type KeyboardScore = {
+  keyboard: (typeof KEYBOARD_DATABASE)[number];
+  score: number;
+  reasons: string[];
+  cautions: string[];
+};
 
-function KeyboardLayoutVisual({ type }: { type: KeyboardLayout }) {
+function hasWirelessText(values: string[]) {
+  return values.some((value) => /무선|wireless/i.test(value));
+}
+
+function hasQuietText(values: string[]) {
+  return values.some((value) => /저소음|silent|무접점/i.test(value));
+}
+
+function scoreKeyboard(keyboard: (typeof KEYBOARD_DATABASE)[number], values: KeyboardFinderValues): KeyboardScore {
+  const reasons: string[] = [];
+  const cautions: string[] = [];
+  let score = 0;
+  const tags = [...keyboard.features, ...(keyboard.specTags ?? [])];
+  const wireless = hasWirelessText(tags);
+  const quiet = hasQuietText(tags) || keyboard.switchType.includes("capacitive");
+  const selectedLayout = values.layout === "any" || values.layout === "60%" ? null : values.layout;
+
+  if (selectedLayout) {
+    if (keyboard.layout === selectedLayout) {
+      score += 3;
+      reasons.push("선택한 배열 조건과 맞을 수 있습니다.");
+    } else {
+      cautions.push("선호 배열과 다를 수 있어 키 배치 적응 여부를 확인해보세요.");
+    }
+  }
+
+  if (values.layout === "60%") {
+    cautions.push("현재 제품 데이터에는 60% 배열 후보가 적어 다른 조건 위주로 참고해주세요.");
+  }
+
+  if (values.switchFeel !== "unknown") {
+    if (values.switchFeel === "silent") {
+      if (quiet) {
+        score += 2;
+        reasons.push("조용한 성향을 기대할 수 있는 후보입니다.");
+      } else {
+        cautions.push("저소음 스위치 여부는 구매 전 확인이 필요합니다.");
+      }
+    } else if (keyboard.switchType.includes(values.switchFeel)) {
+      score += 2;
+      reasons.push("선택한 스위치 느낌을 반영했습니다.");
+    } else {
+      cautions.push("선호 스위치와 다를 수 있어 타건 후기를 확인해보세요.");
+    }
+  }
+
+  if (values.noise === "quiet") {
+    if (quiet) {
+      score += 2;
+      reasons.push("소음이 신경 쓰이는 환경에서 참고할 만합니다.");
+    } else {
+      cautions.push("조용한 공간에서 쓴다면 실제 소음 후기를 확인해보세요.");
+    }
+  }
+
+  if (values.connection === "wireless") {
+    if (wireless) {
+      score += 2;
+      reasons.push("무선 연결 선호를 반영했습니다.");
+    } else {
+      cautions.push("무선 연결이 필요한 경우 제품 상세 스펙 확인이 필요합니다.");
+    }
+  }
+  if (values.connection === "wired" && !wireless) {
+    score += 1;
+    reasons.push("유선 중심 사용 후보로 볼 수 있습니다.");
+  }
+
+  if (values.os !== "any") {
+    cautions.push("OS 호환 정보는 현재 데이터에 제한적이므로 키 매핑과 전용 소프트웨어를 확인해보세요.");
+  }
+
+  if (score === 0) {
+    score = 1;
+    reasons.push("조건을 넓게 보았을 때 참고용 후보입니다.");
+  }
+
+  return { keyboard, score, reasons, cautions };
+}
+
+function CompactOptionGroup({
+  group,
+  value,
+  onChange,
+}: {
+  group: FinderOptionGroup<string>;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const selected = group.options.find((option) => option.value === value);
+
   return (
-    <div className="mb-6 flex h-24 w-full items-center justify-center p-2">
-      <div className="relative flex items-end gap-1.5 rounded-xl bg-[var(--secondary)]/20 p-3 shadow-inner ring-1 ring-[var(--border)]">
-        {/* Main Alpha Block (Always present) */}
-        <div className={cn(
-          "rounded-md border-2 border-[var(--primary)]/40 bg-[var(--background)] p-1.5 transition-all shadow-sm",
-          type === "full" || type === "tkl" ? "h-14 w-28" : 
-          type === "75%" ? "h-14 w-24" :
-          type === "65%" ? "h-12 w-22" : "h-12 w-20"
-        )}>
-          <div className="grid h-full w-full grid-cols-6 grid-rows-3 gap-1 opacity-20">
-            {[...Array(18)].map((_, i) => <div key={i} className="rounded-[1px] bg-[var(--primary)]" />)}
-          </div>
-        </div>
-        
-        {/* Nav Block for TKL and Full */}
-        {(type === "tkl" || type === "full") && (
-          <div className="flex flex-col gap-1.5">
-             <div className="h-4 w-8 rounded-md border border-[var(--border)] bg-[var(--background)]/50 opacity-40" />
-             <div className="h-8 w-8 rounded-md border-2 border-[var(--primary)]/30 bg-[var(--background)] p-1 shadow-sm">
-                <div className="grid h-full w-full grid-cols-2 grid-rows-2 gap-1 opacity-20">
-                  {[...Array(4)].map((_, i) => <div key={i} className="rounded-[1px] bg-[var(--primary)]" />)}
-                </div>
-             </div>
-          </div>
-        )}
-
-        {/* Numpad Block for Full */}
-        {type === "full" && (
-          <div className="h-14 w-12 rounded-md border-2 border-[var(--accent)] bg-[var(--accent)]/10 p-1.5 shadow-[0_0_15px_rgba(var(--accent-rgb),0.1)]">
-            <div className="grid h-full w-full grid-cols-2 grid-rows-3 gap-1">
-              {[...Array(6)].map((_, i) => <div key={i} className="rounded-[1px] bg-[var(--accent)]/40" />)}
-            </div>
-          </div>
-        )}
-
-        {/* Side Column for 65% and 75% */}
-        {(type === "65%" || type === "75%") && (
-          <div className={cn(
-            "rounded-md border-2 border-[var(--accent)]/30 bg-[var(--accent)]/5 p-1 shadow-sm",
-            type === "75%" ? "h-14 w-4" : "h-12 w-4"
-          )}>
-            <div className="flex h-full flex-col gap-1 opacity-40">
-              {[...Array(type === "75%" ? 4 : 3)].map((_, i) => <div key={i} className="flex-1 rounded-[1px] bg-[var(--accent)]" />)}
-            </div>
-          </div>
-        )}
-
-        {/* Layout Tag Badge */}
-        <div className="absolute -top-3 -right-3 rounded-md bg-[var(--primary)] px-2 py-0.5 text-[8px] font-black text-[var(--background)] shadow-lg uppercase tracking-widest">
-          {type}
-        </div>
+    <section className="rounded-xl border border-[var(--border)] bg-[var(--secondary)]/20 p-3">
+      <div className="mb-2 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+        <h2 className="text-sm font-bold text-[var(--primary)]">{group.label}</h2>
+        <p className="text-[11px] leading-snug text-[var(--muted)]">{group.helperText}</p>
       </div>
-    </div>
+      <div className="flex flex-wrap gap-1.5">
+        {group.options.map((option) => {
+          const isSelected = option.value === value;
+
+          return (
+            <button
+              key={option.value}
+              onClick={() => onChange(option.value)}
+              className={cn(
+                "rounded-full border px-3 py-1.5 text-xs font-bold transition-all",
+                isSelected
+                  ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--background)]"
+                  : "border-[var(--border)] bg-[var(--background)] text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--primary)]",
+              )}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+      {selected && (
+        <p className="mt-2 rounded-lg bg-[var(--background)] px-3 py-2 text-[11px] leading-snug text-[var(--muted)]">
+          {selected.description}
+        </p>
+      )}
+    </section>
   );
 }
 
 export default function KeyboardFitPage() {
-  const [step, setStep] = useState<Step>("layout");
-  const [layout, setLayout] = useState<KeyboardLayout | null>(null);
-  const [switchType, setSwitchType] = useState<SwitchType | null>(null);
+  const [values, setValues] = useState<KeyboardFinderValues>(KEYBOARD_FINDER_DEFAULTS);
 
-  const filteredKeyboards = useMemo(() => {
-    if (!layout || !switchType) return [];
-    
-    return KEYBOARD_DATABASE.filter(kb => {
-      const layoutMatch = kb.layout === layout;
-      const switchMatch = kb.switchType.includes(switchType);
-      return layoutMatch && switchMatch;
-    });
-  }, [layout, switchType]);
+  const scoredKeyboards = useMemo(
+    () => KEYBOARD_DATABASE
+      .map((keyboard) => scoreKeyboard(keyboard, values))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3),
+    [values],
+  );
 
-  const reset = () => {
-    setStep("layout");
-    setLayout(null);
-    setSwitchType(null);
+  const selectedLayoutMeta = KEYBOARD_LAYOUT_META[values.layout];
+
+  const updateValue = <Key extends keyof KeyboardFinderValues>(key: Key, value: KeyboardFinderValues[Key]) => {
+    setValues((current) => ({ ...current, [key]: value }));
   };
 
-  const layouts: { id: KeyboardLayout; label: string; sub: string; desc: string }[] = [
-    { id: "full", label: "풀 사이즈", sub: "100% / 넘패드 포함", desc: "숫자 입력이 많은 작업에 필수적입니다." },
-    { id: "tkl", label: "텐키리스", sub: "80% / 넘패드 제거", desc: "게이밍 마우스 공간 확보를 위한 표준입니다." },
-    { id: "75%", label: "75% 배열", sub: "F열 유지 / 컴팩트", desc: "공간은 줄이되 실용성을 유지한 인기 배열입니다." },
-    { id: "65%", label: "65% 배열", sub: "F열 제거 / 방향키 유지", desc: "문서 작업보다는 공간 효율이 최우선입니다." },
-    { id: "60%", label: "60% 배열", sub: "미니 / 가장 작음", desc: "최소한의 키로 극강의 미니멀리즘을 지향합니다." },
-  ];
-
   return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl min-h-[70vh]">
-      <Link 
-        href="/kr" 
-        className="mb-8 inline-flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--primary)] transition-colors"
+    <div className="container mx-auto min-h-[70vh] max-w-6xl px-4 py-8">
+      <Link
+        href="/kr"
+        className="mb-5 inline-flex items-center gap-2 text-xs font-bold text-[var(--muted)] transition-colors hover:text-[var(--primary)]"
       >
         <ChevronLeft className="h-4 w-4" />
         메인으로 돌아가기
       </Link>
 
-      <div className="mb-12">
-        <h1 className="mb-2 text-3xl font-bold text-[var(--primary)] md:text-4xl">Keyboard Finder</h1>
-        <p className="text-[var(--muted)]">사용 목적과 취향에 맞는 기계식 키보드를 찾아드립니다.</p>
+      <div className="mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-end">
+        <div>
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">
+            <SlidersHorizontal className="h-3 w-3" />
+            Compact Finder
+          </div>
+          <h1 className="text-2xl font-bold text-[var(--primary)] md:text-3xl">Keyboard Finder</h1>
+          <p className="mt-1 max-w-2xl text-xs leading-relaxed text-[var(--muted)]">
+            배열 그림 없이 텍스트 기준으로 빠르게 고릅니다. 잘 모르겠음을 선택하면 넓은 후보를 봅니다.
+          </p>
+        </div>
+        <button
+          onClick={() => setValues(KEYBOARD_FINDER_DEFAULTS)}
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--secondary)] px-3 py-2 text-xs font-bold text-[var(--primary)] transition-colors hover:bg-[var(--secondary)]/80"
+        >
+          <RotateCcw className="h-3.5 w-3.5" />
+          초기화
+        </button>
       </div>
 
-      {/* Progress Bar */}
-      <div className="mb-12 flex items-center justify-between gap-4">
-        {[
-          { id: "layout", label: "배열 선택", icon: Layout },
-          { id: "switch", label: "스위치", icon: Zap },
-          { id: "result", label: "추천 결과", icon: CheckCircle2 },
-        ].map((s, idx) => {
-          const isActive = step === s.id;
-          const isDone = (step === "switch" && s.id === "layout") || (step === "result" && (s.id === "layout" || s.id === "switch"));
-          
-          return (
-            <div key={s.id} className="flex flex-1 items-center gap-3">
-              <div className={cn(
-                "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 transition-all",
-                isActive ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--background)] shadow-lg shadow-[var(--accent)]/20" : 
-                isDone ? "border-emerald-600 bg-emerald-600 text-white" : 
-                "border-[var(--border)] bg-[var(--background)] text-[var(--muted)]"
-              )}>
-                <s.icon className="h-5 w-5" />
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_390px]">
+        <div className="grid content-start gap-3 md:grid-cols-2">
+          <section className="rounded-xl border border-[var(--border)] bg-[var(--secondary)]/20 p-3 md:col-span-2">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-sm font-bold text-[var(--primary)]">배열 선택 기준</h2>
+                <p className="mt-1 text-[11px] leading-snug text-[var(--muted)]">{selectedLayoutMeta.description}</p>
               </div>
-              <div className="hidden md:block">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--muted)] opacity-60">Step 0{idx + 1}</p>
-                <p className={cn("text-sm font-bold", isActive ? "text-[var(--primary)]" : "text-[var(--muted)]")}>{s.label}</p>
-              </div>
-              {idx < 2 && <div className="hidden flex-1 border-t-2 border-[var(--border)] md:block" />}
+              <span className="inline-flex w-fit rounded-full bg-[var(--accent)]/10 px-3 py-1 text-xs font-black text-[var(--accent)]">
+                {selectedLayoutMeta.badge}
+              </span>
             </div>
-          );
-        })}
+          </section>
+
+          <CompactOptionGroup
+            group={KEYBOARD_FINDER_OPTIONS.layout}
+            value={values.layout}
+            onChange={(value) => updateValue("layout", value as KeyboardFinderValues["layout"])}
+          />
+          <CompactOptionGroup
+            group={KEYBOARD_FINDER_OPTIONS.switchFeel}
+            value={values.switchFeel}
+            onChange={(value) => updateValue("switchFeel", value as KeyboardFinderValues["switchFeel"])}
+          />
+          <CompactOptionGroup
+            group={KEYBOARD_FINDER_OPTIONS.noise}
+            value={values.noise}
+            onChange={(value) => updateValue("noise", value as KeyboardFinderValues["noise"])}
+          />
+          <CompactOptionGroup
+            group={KEYBOARD_FINDER_OPTIONS.connection}
+            value={values.connection}
+            onChange={(value) => updateValue("connection", value as KeyboardFinderValues["connection"])}
+          />
+          <CompactOptionGroup
+            group={KEYBOARD_FINDER_OPTIONS.os}
+            value={values.os}
+            onChange={(value) => updateValue("os", value as KeyboardFinderValues["os"])}
+          />
+        </div>
+
+        <aside className="space-y-3 xl:sticky xl:top-20 xl:self-start">
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--secondary)]/30 p-3">
+            <h2 className="text-base font-bold text-[var(--primary)]">추천 결과</h2>
+            <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">현재 데이터에 있는 조건만 점수화합니다.</p>
+          </div>
+
+          {scoredKeyboards.map(({ keyboard, reasons, cautions }) => {
+            const display = getContentDisplay(keyboard);
+            const layoutMeta = KEYBOARD_LAYOUT_META[keyboard.layout === "compact" ? "60%" : keyboard.layout];
+            const buyingChecks = display.buyingCheck.length > 0 ? display.buyingCheck : ["배열, 연결 방식, OS 키 매핑 지원 여부를 확인해보세요."];
+            const communityNote = display.communityNote || "키보드 체감은 스위치, 보강판, 흡음재에 따라 다르게 느껴질 수 있습니다.";
+
+            return (
+              <article key={keyboard.id} className="rounded-xl border border-[var(--border)] bg-[var(--secondary)]/30 p-4">
+                <div className="mb-2 flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--accent)]">{keyboard.brand || "Unknown"}</p>
+                    <h3 className="text-base font-bold text-[var(--primary)]">{keyboard.name}</h3>
+                  </div>
+                  <span className="shrink-0 rounded-full bg-[var(--background)] px-2.5 py-1 text-[11px] font-bold text-[var(--muted)]">{keyboard.priceRange}</span>
+                </div>
+                <div className="mb-2 flex flex-wrap gap-1.5">
+                  <span className="rounded-md bg-[var(--accent)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--accent)]">
+                    {layoutMeta.badge} {keyboard.layout.toUpperCase()}
+                  </span>
+                  {keyboard.features.slice(0, 2).map((feature) => (
+                    <span key={feature} className="rounded-md bg-[var(--accent)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--accent)]">
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+                <p className="mb-3 line-clamp-2 text-[11px] leading-relaxed text-[var(--muted)]">{display.summary}</p>
+                <div className="grid gap-2 text-[11px] leading-relaxed">
+                  <p><span className="font-bold text-[var(--primary)]">왜 맞을 수 있는지: </span><span className="text-[var(--muted)]">{reasons[0]}</span></p>
+                  <p><span className="font-bold text-[var(--primary)]">주의할 점: </span><span className="text-[var(--muted)]">{cautions[0] || display.cautions[0] || "재고, 키캡 호환, A/S 조건은 확인이 필요합니다."}</span></p>
+                  <p><span className="font-bold text-[var(--primary)]">구매 전 체크: </span><span className="text-[var(--muted)]">{buyingChecks[0]}</span></p>
+                  <p><span className="font-bold text-[var(--primary)]">체감 한줄평: </span><span className="text-[var(--muted)]">{communityNote}</span></p>
+                </div>
+              </article>
+            );
+          })}
+
+          <div className="rounded-xl border border-[var(--accent)]/10 bg-[var(--accent)]/5 p-3">
+            <div className="flex gap-2">
+              <Info className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent)]" />
+              <p className="text-[11px] leading-relaxed text-[var(--accent)] opacity-80">
+                배열 다이어그램은 계속 숨깁니다. 향후 직접 제작한 이미지가 준비되면 `layoutImage` 필드를 사용할 수 있습니다.
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--secondary)]/20 p-3">
+            <div className="flex gap-2">
+              <Keyboard className="mt-0.5 h-4 w-4 shrink-0 text-[var(--muted)]" />
+              <p className="text-[11px] leading-relaxed text-[var(--muted)]">참고용으로 보세요. 같은 스위치 이름이어도 모델마다 체감이 달라질 수 있습니다.</p>
+            </div>
+          </div>
+        </aside>
       </div>
-
-      <AnimatePresence mode="wait">
-        {step === "layout" && (
-          <motion.div 
-            key="layout"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-8"
-          >
-            <div className="text-center md:text-left">
-              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">어떤 배열을 선호하시나요?</h2>
-              <p className="text-sm text-[var(--muted)]">책상 공간과 숫자패드 필요 여부에 따라 선택하세요.</p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {layouts.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setLayout(item.id as KeyboardLayout);
-                    setStep("switch");
-                  }}
-                  className="group flex flex-col items-center rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6 transition-all hover:border-[var(--accent)] hover:bg-[var(--secondary)]/50 hover:shadow-xl"
-                >
-                  <KeyboardLayoutVisual type={item.id} />
-                  <span className="mb-1 text-lg font-bold text-[var(--primary)]">{item.label}</span>
-                  <span className="mb-2 rounded-full bg-[var(--accent)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--accent)]">
-                    {item.sub}
-                  </span>
-                  <span className="text-center text-xs text-[var(--muted)] leading-tight">{item.desc}</span>
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {step === "switch" && (
-          <motion.div 
-            key="switch"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-8"
-          >
-            <div className="text-center md:text-left">
-              <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">선호하는 타건감은?</h2>
-              <p className="text-sm text-[var(--muted)]">소음 정도와 손끝에 느껴지는 걸림을 선택하세요.</p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {[
-                { id: "linear", label: "Linear (리니어)", desc: "걸림 없이 매끄럽게 눌리는 부드러운 타입", detail: "소음이 적고 반응이 빨라 게이밍과 사무용 모두 무난할 수 있습니다." },
-                { id: "tactile", label: "Tactile (넌클릭)", desc: "중간에 톡 걸리는 구분감이 느껴지는 타입", detail: "타이핑할 때 확실한 피드백을 원하는 분들에게 잘 맞을 수 있습니다." },
-                { id: "clicky", label: "Clicky (클릭)", desc: "찰칵거리는 경쾌한 소리와 강한 구분감", detail: "기계식 특유의 소리를 즐긴다면 좋으나, 조용한 장소에서는 주의가 필요합니다." },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setSwitchType(item.id as SwitchType);
-                    setStep("result");
-                  }}
-                  className="group flex flex-col items-center rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-8 transition-all hover:border-[var(--accent)] hover:bg-[var(--secondary)]/50 hover:shadow-xl"
-                >
-                  <Zap className="mb-4 h-10 w-10 text-[var(--muted)] opacity-50 group-hover:text-[var(--accent)] group-hover:opacity-100" />
-                  <span className="mb-2 text-lg font-bold text-[var(--primary)]">{item.label}</span>
-                  <span className="text-center text-xs font-bold text-[var(--accent)] mb-2">{item.desc}</span>
-                  <span className="text-center text-[10px] text-[var(--muted)] leading-relaxed">{item.detail}</span>
-                </button>
-              ))}
-            </div>
-            
-            <button 
-              onClick={() => setStep("layout")}
-              className="flex items-center gap-2 text-sm font-bold text-[var(--muted)] hover:text-[var(--primary)]"
-            >
-              <ChevronLeft className="h-4 w-4" /> 이전 단계로
-            </button>
-          </motion.div>
-        )}
-
-        {step === "result" && (
-          <motion.div 
-            key="result"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="space-y-10"
-          >
-            <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-              <div className="text-center md:text-left">
-                <h2 className="mb-2 text-2xl font-bold text-[var(--primary)]">당신을 위한 키보드 추천 결과</h2>
-                <div className="flex flex-wrap gap-2">
-                  <span className="rounded-full bg-[var(--secondary)] px-3 py-1 text-xs font-bold text-[var(--muted)] border border-[var(--border)]">
-                    배열: {layout?.toUpperCase()}
-                  </span>
-                  <span className="rounded-full bg-[var(--secondary)] px-3 py-1 text-xs font-bold text-[var(--muted)] border border-[var(--border)]">
-                    스위치: {switchType?.toUpperCase()}
-                  </span>
-                </div>
-              </div>
-              <button 
-                onClick={reset}
-                className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--secondary)] px-5 py-3 text-sm font-bold text-[var(--primary)] hover:bg-[var(--secondary)]/80"
-              >
-                <RotateCcw className="h-4 w-4" /> 다시 하기
-              </button>
-            </div>
-
-            {filteredKeyboards.length > 0 ? (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                {filteredKeyboards.map((kb) => {
-                  const display = getContentDisplay(kb);
-                  return (
-                    <div 
-                      key={kb.id}
-                      className="flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--secondary)]/30 p-6"
-                    >
-                      <div className="mb-4 flex items-center justify-between">
-                        <span className="text-xs font-bold text-[var(--accent)] uppercase tracking-tighter">{kb.brand || "Unknown"}</span>
-                        <span className="text-sm font-bold text-[var(--primary)]">{kb.priceRange}</span>
-                      </div>
-                      <h3 className="mb-2 text-xl font-bold text-[var(--primary)]">{kb.name}</h3>
-                      <p className="mb-4 text-xs text-[var(--muted)] leading-relaxed">{display.summary}</p>
-                      <div className="mb-6 space-y-1.5">
-                        <p className="text-xs text-[var(--muted)] font-medium">주요 특징:</p>
-                        <ul className="list-inside list-disc">
-                          {display.strengths.slice(0, 2).map((s, i) => (
-                            <li key={i} className="text-[10px] text-[var(--muted)]">{s}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div className="mt-auto flex flex-wrap gap-1.5">
-                        {kb.features.map(f => (
-                          <span key={f} className="rounded-md bg-[var(--accent)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--accent)]">
-                            {f}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="rounded-2xl border-2 border-dashed border-[var(--border)] p-20 text-center">
-                <Info className="mx-auto mb-4 h-10 w-10 text-[var(--muted)] opacity-30" />
-                <p className="text-lg font-bold text-[var(--primary)]">아직 완벽하게 일치하는 제품이 없네요.</p>
-                <p className="text-sm text-[var(--muted)]">데이터베이스를 계속 업데이트 중입니다!</p>
-              </div>
-            )}
-
-            <div className="rounded-2xl bg-[var(--accent)]/5 p-6 border border-[var(--accent)]/10">
-              <div className="flex gap-3">
-                <Keyboard className="h-5 w-5 shrink-0 text-[var(--accent)]" />
-                <div className="space-y-2">
-                  <p className="text-xs font-bold text-[var(--accent)]">배열 선택 팁</p>
-                  <p className="text-[11px] leading-relaxed text-[var(--accent)] opacity-80">
-                    작업 효율을 중시하신다면 풀배열이나 텐키리스를, 
-                    데스크테리어와 마우스 공간 확보를 중시하신다면 75% 이하의 컴팩트 배열을 추천드립니다. 
-                    처음에는 조금 낯설 수 있지만 적응되면 매우 쾌적한 데스크 환경을 제공합니다.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

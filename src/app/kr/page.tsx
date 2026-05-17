@@ -120,44 +120,45 @@ export default function Home() {
       </section>
 
       {/* Equipment Finders */}
-      <section className="container mx-auto px-4 py-20 bg-[var(--card)] rounded-[3rem] border border-[var(--border)] my-12">
-        <div className="mb-12 text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-[var(--primary)] md:text-3xl">내게 꼭 맞는 장비 찾기</h2>
-          <p className="mt-2 text-sm text-[var(--muted)]">데이터 기반 알고리즘으로 최적의 기어 세팅을 제안합니다.</p>
+      <section className="container mx-auto my-10 px-4">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 md:p-6">
+        <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h2 className="text-lg font-bold tracking-tight text-[var(--primary)] md:text-xl">장비를 새로 고를 때만 Finder를 사용하세요</h2>
+            <p className="mt-1 text-xs text-[var(--muted)]">테스트만 필요하다면 위 도구를 바로 사용하면 됩니다.</p>
+          </div>
+          <span className="w-fit rounded-full border border-[var(--border)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">
+            Optional
+          </span>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 max-w-4xl mx-auto">
-          <Link href="/kr/finder/mouse-fit" className="group relative overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--background)] p-8 transition-all hover:border-[var(--accent)] hover:shadow-xl">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--secondary)] text-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:text-[var(--background)] transition-colors">
-                <MousePointer2 className="h-6 w-6" />
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          <Link href="/kr/finder/mouse-fit" className="group rounded-xl border border-[var(--border)] bg-[var(--background)] p-4 transition-all hover:border-[var(--accent)]">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--secondary)] text-[var(--accent)] transition-colors group-hover:bg-[var(--accent)] group-hover:text-[var(--background)]">
+                <MousePointer2 className="h-4 w-4" />
               </div>
-              <h3 className="text-xl font-bold text-[var(--primary)]">Mouse Fit Finder</h3>
-            </div>
-            <p className="text-sm text-[var(--muted)] leading-relaxed mb-6">
-              자신의 손 크기와 마우스를 잡는 습관에 맞춰 <br/>
-              가장 편안하고 무리가 없는 마우스를 찾아보세요.
-            </p>
-            <div className="flex items-center gap-2 text-sm font-bold text-[var(--accent)]">
-              나의 마우스 찾기 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <div className="min-w-0">
+                <h3 className="text-sm font-bold text-[var(--primary)]">마우스 찾기</h3>
+                <p className="mt-0.5 text-xs text-[var(--muted)]">손 크기, 형태, 무게, 연결 방식만 빠르게 고릅니다.</p>
+              </div>
+              <ArrowRight className="ml-auto h-4 w-4 shrink-0 text-[var(--accent)] transition-transform group-hover:translate-x-1" />
             </div>
           </Link>
 
-          <Link href="/kr/finder/keyboard-fit" className="group relative overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--background)] p-8 transition-all hover:border-[var(--accent)] hover:shadow-xl">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--secondary)] text-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:text-[var(--background)] transition-colors">
-                <Keyboard className="h-6 w-6" />
+          <Link href="/kr/finder/keyboard-fit" className="group rounded-xl border border-[var(--border)] bg-[var(--background)] p-4 transition-all hover:border-[var(--accent)]">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--secondary)] text-[var(--accent)] transition-colors group-hover:bg-[var(--accent)] group-hover:text-[var(--background)]">
+                <Keyboard className="h-4 w-4" />
               </div>
-              <h3 className="text-xl font-bold text-[var(--primary)]">Keyboard Finder</h3>
-            </div>
-            <p className="text-sm text-[var(--muted)] leading-relaxed mb-6">
-              원하는 소리와 타건감을 바탕으로 <br/>
-              당신의 타이핑을 즐겁게 만들 키보드를 추천합니다.
-            </p>
-            <div className="flex items-center gap-2 text-sm font-bold text-[var(--accent)]">
-              나의 키보드 찾기 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <div className="min-w-0">
+                <h3 className="text-sm font-bold text-[var(--primary)]">키보드 찾기</h3>
+                <p className="mt-0.5 text-xs text-[var(--muted)]">배열, 스위치, 소음, 연결, OS를 간단히 봅니다.</p>
+              </div>
+              <ArrowRight className="ml-auto h-4 w-4 shrink-0 text-[var(--accent)] transition-transform group-hover:translate-x-1" />
             </div>
           </Link>
+        </div>
         </div>
       </section>
 

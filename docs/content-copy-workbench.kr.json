@@ -1,0 +1,72 @@
+{
+  "project_id": "project7_setupradar",
+  "locale": "kr",
+  "version": "v0.3A",
+  "items": [
+    {
+      "id": "COPY-001",
+      "section": "메인 페이지",
+      "label": "Hero 강조 단어",
+      "file_path": "src/content/kr/siteCopy.ts",
+      "field_path": "heroHighlight",
+      "current_ai": "객관적으로",
+      "current_editor": "",
+      "operator_draft": "",
+      "memo": "",
+      "priority": "high",
+      "status": "needs_edit"
+    },
+    {
+      "id": "COPY-002",
+      "section": "메인 페이지",
+      "label": "Hero 설명",
+      "file_path": "src/content/kr/siteCopy.ts",
+      "field_path": "heroDescription",
+      "current_ai": "별도의 소프트웨어 설치 없이 브라우저에서 즉시 시작하는 고정밀 PC 하드웨어 진단 도구 및 스마트 구매 가이드입니다.",
+      "current_editor": "",
+      "operator_draft": "",
+      "memo": "",
+      "priority": "high",
+      "status": "needs_edit"
+    },
+    {
+      "id": "COPY-003",
+      "section": "메인 페이지",
+      "label": "테스트 도구 섹션 제목",
+      "file_path": "src/app/kr/page.tsx",
+      "field_path": "toolsSection.title",
+      "current_ai": "즉시 사용 가능한 도구",
+      "current_editor": "",
+      "operator_draft": "",
+      "memo": "",
+      "priority": "medium",
+      "status": "needs_edit"
+    },
+    {
+      "id": "MOUSE-FINDER-001",
+      "section": "Mouse Finder",
+      "label": "Finder 제목",
+      "file_path": "src/app/kr/finder/mouse-fit/page.tsx",
+      "field_path": "title",
+      "current_ai": "Mouse Finder",
+      "current_editor": "",
+      "operator_draft": "",
+      "memo": "",
+      "priority": "medium",
+      "status": "needs_edit"
+    },
+    {
+      "id": "MOUSE-FINDER-003",
+      "section": "Mouse Finder",
+      "label": "손 크기 질문",
+      "file_path": "src/content/kr/finder/mouseFinderOptions.ts",
+      "field_path": "handSize.label",
+      "current_ai": "손 크기 / 현재 마우스가 크거나 작게 느껴질 때만 골라도 됩니다.",
+      "current_editor": "",
+      "operator_draft": "",
+      "memo": "",
+      "priority": "high",
+      "status": "needs_edit"
+    }
+  ]
+}
