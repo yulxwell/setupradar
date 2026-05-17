@@ -56,6 +56,74 @@ export interface KeyboardDetailSpecs {
 
 export type KeyboardRawSpecs = Record<string, string | number | boolean | null | string[]>;
 
+export type MouseBasicShapeFilter = "symmetrical" | "right_ergonomic" | "vertical" | "any";
+export type MouseBasicWeightFilter = "ultralight" | "light" | "medium" | "any";
+export type MouseBasicConnectionFilter = "wired" | "wireless" | "multi_mode" | "any";
+export type MouseBasicSizeFilter = "small" | "medium" | "large" | "unknown";
+export type MouseBasicPriceFilter = "budget" | "mid" | "premium" | "any";
+
+export type MouseGamingPerformanceFilter = "standard" | "high" | "enthusiast" | "no_preference";
+export type MouseButtonCountFilter = "basic" | "side_buttons" | "multi_button" | "no_preference";
+export type MouseCoatingFilter = "matte" | "rubber" | "glossy" | "no_preference";
+export type MouseSwitchTendencyFilter = "mechanical" | "optical" | "silent" | "unknown";
+export type MouseBatteryFilter = "built_in" | "aa_aaa" | "wireless_charging" | "unknown";
+export type MouseShellRelationType = "similar_shape" | "community_compared" | "inspired_by" | "unknown";
+export type MouseShellConfidence = "low" | "medium" | "high";
+export type MouseShellSourceHint = "eloshapes" | "community" | "official" | "manual" | "unknown";
+
+export interface MouseBasicFilters {
+  shape: MouseBasicShapeFilter;
+  weight: MouseBasicWeightFilter;
+  connection: MouseBasicConnectionFilter;
+  size: MouseBasicSizeFilter;
+  price: MouseBasicPriceFilter;
+}
+
+export interface MouseAdvancedFilters {
+  gamingPerformance?: MouseGamingPerformanceFilter;
+  buttonCount?: MouseButtonCountFilter;
+  coating?: MouseCoatingFilter;
+  switchTendency?: MouseSwitchTendencyFilter;
+  battery?: MouseBatteryFilter;
+}
+
+export interface MouseDetailSpecs {
+  sensorModel?: string | null;
+  maxDpi?: number | null;
+  ips?: number | null;
+  fpsScanRate?: number | null;
+  accelerationG?: number | null;
+  pollingRateHz?: number | null;
+  bluetoothVersion?: string | null;
+  usbOrPs2?: string | null;
+  batteryDetail?: string | null;
+  warrantyPeriod?: string | null;
+  dimensionsMm?: {
+    length?: number;
+    width?: number;
+    height?: number;
+  };
+  buttonCountDetail?: string | null;
+  dpiChangeSupport?: boolean | null;
+  adjustableWeight?: boolean | null;
+  replaceableParts?: boolean | null;
+  infiniteWheel?: boolean | null;
+  rgbLighting?: boolean | null;
+}
+
+export interface MouseShellReference {
+  referenceModelKo?: string;
+  referenceModelEn?: string;
+  relationType: MouseShellRelationType;
+  confidence: MouseShellConfidence;
+  sourceHint: MouseShellSourceHint;
+  aiNoteKo?: string;
+  editorNoteKo?: string;
+  cautionKo?: string;
+}
+
+export type MouseRawSpecs = Record<string, string | number | boolean | null | string[]>;
+
 export interface Keyboard {
   id: string;
   name: string;
@@ -88,6 +156,11 @@ export interface Mouse {
   priceRange: string;
   imageUrl?: string;
   features: string[];
+  basicFilters?: MouseBasicFilters;
+  advancedFilters?: MouseAdvancedFilters;
+  detailSpecs?: MouseDetailSpecs;
+  rawSpecs?: MouseRawSpecs;
+  shellReferences?: MouseShellReference[];
 }
 
 export interface KeyboardSwitch {

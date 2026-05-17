@@ -319,3 +319,16 @@ SetupRadar project7 작업 채팅용 운영 로그입니다. 이 문서는 v0.1.
 - `KeyboardContent` 타입에 `basicFilters`, `advancedFilters`, `detailSpecs`, `rawSpecs`를 선택 필드로 추가했다.
 - 기존 `layout`, `switchType`, `priceRange`, `features` 필드는 Keyboard Finder 호환을 위해 유지했다.
 - 제품 대량 추가, UI 대규모 변경, Supabase/API/DB 추가는 하지 않았다.
+
+## Mouse Product Filter & Shell Reference 설계 기록
+
+- 마우스 제품 데이터도 다나와식 전체 필터를 그대로 쓰지 않고 기본 5개, 더보기 필터, 상세 스펙/원본 스펙으로 나누는 원칙을 세웠다.
+- 기본 필터는 형태, 무게감, 연결 방식, 크기감, 가격대만 둔다.
+- 게이밍 성능, 버튼 수, 코팅/그립감, 스위치 성향, 배터리/충전은 더보기 필터로 분리한다.
+- 센서 모델명, 최대 DPI, IPS, FPS 스캔율, 가속도 G, 폴링레이트, 블루투스 버전, USB/PS2, 배터리 세부값, A/S 보증기간, 가로/세로/높이, 버튼 수 세부, DPI 변경 여부, 무게추 조절, 파츠 변경 가능, 무한휠, RGB/LED는 상세 스펙 또는 원본 스펙으로 보관한다.
+- 마우스 차별화 요소로 `shellReferences` 필드를 추가했다.
+- 쉘 레퍼런스에는 `referenceModelKo`, `referenceModelEn`, `relationType`, `confidence`, `sourceHint`, `aiNoteKo`, `editorNoteKo`, `cautionKo`를 둘 수 있다.
+- "카피쉘", "배꼈다", "짭", "표절", "원본 쉘" 같은 표현은 사용하지 않는다.
+- 대신 "유사 쉘 계열", "쉘 체감 레퍼런스", "자주 비교되는 쉘", "손에 닿는 형태가 비슷하다는 반응", "비교 기준으로 삼기 좋음" 같은 표현을 사용한다.
+- 기존 `shapeType`, `dimensions`, `weight`, `sensor`, `handSizeRange`, `priceRange`, `features` 필드는 Mouse Finder 호환을 위해 유지했다.
+- 제품 대량 추가, UI 대규모 변경, Supabase/API/DB 추가는 하지 않았다.
