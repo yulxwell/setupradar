@@ -7,6 +7,10 @@
 - 장비 찾기: `/kr/finder/mouse-fit`
 - 키보드 배열/스위치: `/kr/finder/keyboard-fit`
 
+## 🗂 Repository
+- GitHub repo name: `project7_setupradar`
+- 이전 `setupradar` 이름에서 Project7 식별이 더 명확한 이름으로 정리했습니다.
+
 PC 하드웨어(마우스, 키보드, 모니터) 진단 및 구매 가이드를 제공하는 정적 웹 플랫폼입니다.
 
 ## 🚀 프로젝트 목표
@@ -21,6 +25,12 @@ SetupRadar는 운영 효율성을 위해 하이브리드 콘텐츠 구조를 사
 - **WebUI 작업대**: Project99 Control Tower를 통한 시각적 편집을 위해 [docs/content-copy-workbench.kr.json](file:///Users/jilee/antigravity/src/project7/docs/content-copy-workbench.kr.json)을 제공합니다.
 
 ## ✅ 주요 업데이트 내역
+### Keyboard Product Filter Simplification
+- **기본 필터 5개 원칙**: 키보드 제품 필터는 배열, 연결 방식, 키감/축 느낌, 소음, 가격대까지만 기본 노출하는 구조로 정리했습니다.
+- **더보기 필터 분리**: 게이밍 기능, 멀티기기, 키캡, 하우징, 백라이트, 무게감은 선택형 더보기 필터로 분리합니다.
+- **상세 스펙 분리**: 키압 세부값, 매크로, 응답속도, 블루투스 버전, 배터리, 엔터키 형태, 각인 위치, 케이블 재질, 구성품, PS2, 스텝스컬쳐, 윈도우 키 잠금, 세부 크기는 상세 스펙 또는 원본 스펙으로 보관합니다.
+- **초보자 우선**: 다나와식 전체 스펙 필터를 그대로 노출하지 않고 구매 판단에 필요한 조건만 먼저 보여줍니다.
+
 ### v0.3F - Visual Editing Workbench Ready (Current)
 - **시각형 문구 수정 작업대**: Project99 Control Tower의 `/projects/project7/content`에서 SetupRadar 화면처럼 보이는 mock preview를 보며 문구를 클릭하고 수정안을 작성할 수 있습니다.
 - **수동 반영 원칙 유지**: 작업대 수정안은 localStorage와 export 파일로만 관리되며, 실제 사이트 반영은 Codex/Gemini가 `src/content`의 `editor` 필드에 옮긴 뒤 Git push와 Cloudflare Pages 배포로 진행합니다.

@@ -302,3 +302,20 @@ SetupRadar project7 작업 채팅용 운영 로그입니다. 이 문서는 v0.1.
 - 문구 수정은 yulxwell이 다음 루프에서 직접 진행한다.
 - Control Tower 작업대 수정안은 localStorage에 임시 저장하고 export 후 Codex/Gemini가 `editor` 필드에 반영하는 방식이다.
 - 실시간 DB 수정, Supabase/API/n8n 연동, Project7 공개 사이트 자동 수정은 없다.
+
+## GitHub Repository 이름 정리 기록
+
+- Project7 SetupRadar의 GitHub repo 이름을 `setupradar`에서 `project7_setupradar`로 정리했다.
+- Project7과 Project99 Control Tower를 구분하기 쉽도록 Project 번호가 드러나는 이름을 기준으로 기록한다.
+- 이 기록은 repo 명칭 정리이며, 공개 사이트 라우팅(`/kr`)이나 Cloudflare Pages 배포 URL 변경을 의미하지 않는다.
+
+## Keyboard Product Filter Simplification 설계 기록
+
+- 키보드 제품 데이터 확장을 준비하면서 다나와식 전체 필터를 그대로 쓰지 않는 원칙을 세웠다.
+- 키보드 필터는 기본 5개, 더보기 필터, 상세 스펙/원본 스펙으로 나눈다.
+- 기본 필터는 배열, 연결 방식, 키감/축 느낌, 소음, 가격대만 둔다.
+- 게이밍 기능, 멀티기기, 키캡, 하우징, 백라이트, 무게감은 더보기 필터로 분리한다.
+- 키압 세부값, 매크로, 응답속도, 블루투스 버전, 배터리, 엔터키 형태, 각인 위치, 케이블 재질, 구성품, PS2, 스텝스컬쳐, 윈도우 키 잠금, 세부 크기는 상세 스펙 또는 원본 스펙으로 보관한다.
+- `KeyboardContent` 타입에 `basicFilters`, `advancedFilters`, `detailSpecs`, `rawSpecs`를 선택 필드로 추가했다.
+- 기존 `layout`, `switchType`, `priceRange`, `features` 필드는 Keyboard Finder 호환을 위해 유지했다.
+- 제품 대량 추가, UI 대규모 변경, Supabase/API/DB 추가는 하지 않았다.
